@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.bukkit.command.CommandSender;
 
-import com.projectkorra.items.ConfigManager;
-import com.projectkorra.items.Messages;
+import com.projectkorra.items.ARCHIVE.Messages;
+import com.projectkorra.items.configuration.ConfigManager;
 
 public class ReloadCommand extends PKICommand {
 

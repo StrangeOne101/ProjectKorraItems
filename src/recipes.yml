@@ -1,0 +1,12 @@
+RecipeForWool:
+    UnshapedRecipe:
+        Ingredients: WOOL, WOOL, WOOL:14, WOOL:14, WOOL:14
+        Item: ExampleWool
+        Amount: 3
+RecipeForBoots:
+    ShapedRecipe:
+        Recipe:
+        - GOLD_INGOT, AIR, GOLD_INGOT
+        - GOLD_INGOT, DIRT, GOLD_INGOT
+        Item: ExampleBoots
+        Amount: 1

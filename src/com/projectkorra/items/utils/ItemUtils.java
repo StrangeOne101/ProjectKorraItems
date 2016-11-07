@@ -1,10 +1,10 @@
 package com.projectkorra.items.utils;
 
 import com.projectkorra.items.ProjectKorraItems;
+import com.projectkorra.items.ARCHIVE.PKItem;
 import com.projectkorra.items.attribute.Action;
 import com.projectkorra.items.attribute.Attribute;
 import com.projectkorra.items.attribute.AttributeList;
-import com.projectkorra.items.customs.PKItem;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

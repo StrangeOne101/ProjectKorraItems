@@ -1,9 +1,12 @@
-package com.projectkorra.items;
+package com.projectkorra.items.ARCHIVE;
 
 import org.bukkit.ChatColor;
 
+import com.projectkorra.items.ProjectKorraItems;
+
 import java.util.concurrent.ConcurrentHashMap;
 
+@Deprecated
 public class Messages {
 	/**
 	 * logDelay is used to store the times that a message was logged by
@@ -26,7 +29,6 @@ public class Messages {
 	public static final String[] DISPLAY_ALIAS = { "display", "d", "disp", "show" };
 	public static final String[] STATS_ALIAS = { "stats", "s", "stat", "attr", "attri", "attribute" };
 	public static final String[] RECIPE_ALIAS = { "recipe", "rec", "formula" };
-	public static final String[] GIVE_ALIAS = { "give", "g", "giv" };
 	public static final String[] EQUIP_ALIAS = { "equip", "e", "equ", "eq", "equi" };
 
 	public static final String BAD_PREFIX = "an error occured while parsing the prefix";

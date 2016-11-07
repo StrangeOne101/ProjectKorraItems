@@ -11,12 +11,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.projectkorra.items.Messages;
+import com.projectkorra.items.ARCHIVE.Messages;
+import com.projectkorra.items.ARCHIVE.PKItem;
 import com.projectkorra.items.attribute.Action;
 import com.projectkorra.items.attribute.Attribute;
 import com.projectkorra.items.attribute.AttributeList;
 import com.projectkorra.items.attribute.AttributeListener;
-import com.projectkorra.items.customs.PKItem;
 import com.projectkorra.projectkorra.Element;
 
 public class AttributeUtils {

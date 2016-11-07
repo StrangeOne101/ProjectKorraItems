@@ -6,7 +6,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import com.projectkorra.items.Messages;
+import com.projectkorra.items.ARCHIVE.Messages;
 import com.projectkorra.projectkorra.command.PKCommand;
 
 public class BaseCommand extends PKCommand {

@@ -1,9 +1,10 @@
-package com.projectkorra.items.customs;
+package com.projectkorra.items.ARCHIVE;
 
-import com.projectkorra.items.Messages;
 import com.projectkorra.items.ProjectKorraItems;
 import com.projectkorra.items.attribute.Attribute;
 import com.projectkorra.items.attribute.AttributeList;
+import com.projectkorra.items.customs.EnchantGlow;
+import com.projectkorra.items.customs.RecipeIngredient;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Deprecated
 public class PKItem {
 	public static ConcurrentHashMap<String, PKItem> items = new ConcurrentHashMap<String, PKItem>();
 	public static ArrayList<PKItem> itemList = new ArrayList<PKItem>();

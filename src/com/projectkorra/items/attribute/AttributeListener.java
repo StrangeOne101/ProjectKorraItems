@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.projectkorra.items.items.Glider;
+import com.projectkorra.items.ARCHIVE.Glider;
 import com.projectkorra.items.utils.AttributeUtils;
 import com.projectkorra.items.utils.ItemUtils;
 

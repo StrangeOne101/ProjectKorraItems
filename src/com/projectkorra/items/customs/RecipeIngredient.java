@@ -1,7 +1,8 @@
 package com.projectkorra.items.customs;
 
-import com.projectkorra.items.Messages;
 import com.projectkorra.items.ProjectKorraItems;
+import com.projectkorra.items.ARCHIVE.Messages;
+import com.projectkorra.items.ARCHIVE.PKItem;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

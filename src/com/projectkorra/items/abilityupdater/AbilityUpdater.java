@@ -9,10 +9,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.projectkorra.items.Messages;
 import com.projectkorra.items.ProjectKorraItems;
+import com.projectkorra.items.ARCHIVE.Messages;
+import com.projectkorra.items.ARCHIVE.PKItem;
 import com.projectkorra.items.attribute.Attribute;
-import com.projectkorra.items.customs.PKItem;
 import com.projectkorra.items.utils.AttributeUtils;
 import com.projectkorra.items.utils.ItemUtils;
 import com.projectkorra.projectkorra.event.AbilityDamageEntityEvent;

@@ -5,7 +5,7 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.projectkorra.items.Messages;
+import com.projectkorra.items.ARCHIVE.Messages;
 import com.projectkorra.items.customs.PKIEquip;
 
 public class EquipCommand extends PKICommand {

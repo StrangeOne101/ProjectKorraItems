@@ -1,4 +1,4 @@
-package com.projectkorra.items.items;
+package com.projectkorra.items.ARCHIVE;
 
 import com.projectkorra.items.ProjectKorraItems;
 import com.projectkorra.items.attribute.Action;

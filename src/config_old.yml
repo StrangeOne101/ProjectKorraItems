@@ -1,55 +1,4 @@
 Item:
-    Name: example1
-    DisplayName: This is an Example Item
-    Material: STICK
-    Amount: 1
-    Durability: 0
-    Lore: This is some lore!!!!
-    Glow: true
-Item:
-    Name: example2
-    DisplayName: <&4>Fire Wool
-    Material: WOOL
-    Amount: 3
-    Durability: 14
-    Lore: <&c>This wool belongs to the Fire Nation<n><&c>Use with care!
-    Glow: true
-    UnshapedRecipe: WOOL, WOOL:3:14, WOOL, example1:3
-Item:
-    Name: example3
-    DisplayName: <&2>Earth <&a>Walkers
-    Material: GOLD_BOOTS
-    ShapedRecipe: GOLD_INGOT, AIR, GOLD_INGOT, GOLD_INGOT, DIRT:16, GOLD_INGOT  
-    Stats:
-        EarthSmashFlySpeed: 25
-        EarthSmashFlyDuration: 25
-        EarthSmashDamage: -15
-        WearOnly: true
-Item:
-    Name: example4
-    DisplayName: <&4><&l>BLAZE ROD!
-    Material: BLAZE_ROD
-    UnshapedRecipe: BLAZE_ROD:3, BLAZE_POWDER:3
-    Stats:
-        Charges: 20
-        BlazeRange: 30
-        DestroyAfterCharges: true
-        RequireElement: fire
-        RequireWorld: world
-        ParticleEffects: flame:5:100:10:100
-Item:
-    Name: example5
-    DisplayName: <&9>Azula Stone
-    Material: REDSTONE
-    Lore: <&c>Instantly charges Lightning
-    Stats:
-        SneakCharges: 1
-        DestroyAfterCharges: true
-        IgnoreDestroyMessage: true
-        AllowFromInventory: true
-        LightningChargeTime: -300
-        ParticleEffects: magiccrit:15:50:10:0
-Item:
     Name: example6
     DisplayName: <&2>Cactus Juice
     Material: POTION
@@ -153,3 +102,4 @@ Item:
     Stats:
         AirBubbleRadius: -60
         WaterBubbleRadius: -60
+
