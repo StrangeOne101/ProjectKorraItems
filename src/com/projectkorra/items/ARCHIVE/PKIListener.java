@@ -31,7 +31,7 @@ import com.projectkorra.items.customs.PKIEquip;
 import com.projectkorra.items.customs.RecipeIngredient;
 import com.projectkorra.items.utils.AttributeUtils;
 import com.projectkorra.items.utils.ItemUtils;
-
+@Deprecated
 public class PKIListener implements Listener {
 
 	/**

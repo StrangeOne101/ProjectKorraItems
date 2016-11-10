@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 import com.projectkorra.items.ARCHIVE.Messages;
 import com.projectkorra.items.customs.PKIEquip;
 
+import net.md_5.bungee.api.ChatColor;
+
+@Deprecated
 public class EquipCommand extends PKICommand {
 
 	public EquipCommand() {
@@ -16,7 +19,8 @@ public class EquipCommand extends PKICommand {
 
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
-		if (correctLength(sender, args.size(), 0, 0))
+		sender.sendMessage(ChatColor.RED + "This command is no longer needed. Just either hold or wear the item and you will use it.");
+		/*if (correctLength(sender, args.size(), 0, 0))
 		if (args.size() == 0) {
 			if (!hasPermission(sender)) {
 				sender.sendMessage(Messages.NO_PERM);
@@ -29,7 +33,7 @@ public class EquipCommand extends PKICommand {
 			Player player = (Player)sender;
 			new PKIEquip(player);
 			return;
-		}
+		}*/
 		
 	}
 

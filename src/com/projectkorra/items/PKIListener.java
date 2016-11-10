@@ -1,5 +1,6 @@
 package com.projectkorra.items;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -20,32 +21,43 @@ public class PKIListener implements Listener
 		
 		Inventory inv = event.getInventory();
 		
-		updateItems(inv);
+		updateItems(inv, (Player) event.getPlayer());
 	}
 
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		
-		updateItems(event.getPlayer().getInventory());
+		updateItems(event.getPlayer().getInventory(), event.getPlayer());
 	}
 	
 	@EventHandler
 	public void onPickupItem(InventoryPickupItemEvent event) {
 		if (event.isCancelled()) return;
+		if (!(event.getInventory() instanceof PlayerInventory)) return;
 		
-		if (PKItem.isPKItem(event.getItem().getItemStack()) && !(event.getItem().getItemStack() instanceof PKItemStack)) {
-			event.getItem().setItemStack(PKItemStack.loadFromItemStack(event.getItem().getItemStack()));
+		Player p = (Player) ((PlayerInventory)event.getInventory()).getHolder();
+		
+		if (PKItem.isPKItem(event.getItem().getItemStack())) {
+			ItemStack pkitemstack = PKItemStack.loadFromItemStack(event.getItem().getItemStack());
+			if (pkitemstack == null) {
+				pkitemstack = PKItemStack.getDudItem(PKItem.findID(event.getItem().getItemStack().getItemMeta().getDisplayName()), p.hasPermission("bendingitems.admin"));
+			}
+			
+			event.getItem().setItemStack(pkitemstack);
 			
 		}
 	}
 	
-	private void updateItems(Inventory inv) {
+	public static void updateItems(Inventory inv, Player player) {
 		for (int i = 0; i < inv.getContents().length; i++) {
 			ItemStack stack = inv.getContents()[i];
-			
+			if (stack == null) continue;
 			//If it is a PKItem that hasn't been updated since server start
-			if (PKItem.isPKItem(stack) && !(stack instanceof PKItemStack)) { 
-				PKItemStack pkitemstack = PKItemStack.loadFromItemStack(stack);
+			if (PKItem.isPKItem(stack)) { 
+				ItemStack pkitemstack = PKItemStack.loadFromItemStack(stack);
+				if (pkitemstack == null) {
+					pkitemstack = PKItemStack.getDudItem(PKItem.findID(stack.getItemMeta().getDisplayName()), player.hasPermission("bendingitems.admin"));
+				}
 				inv.getContents()[i] = pkitemstack;
 			}
 		}

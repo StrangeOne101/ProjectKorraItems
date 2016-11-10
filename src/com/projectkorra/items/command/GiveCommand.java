@@ -32,12 +32,12 @@ public class GiveCommand extends PKICommand {
 			if (args.size() == 0) {
 				String s = ChatColor.GOLD + "Item Names: " + ChatColor.YELLOW;
 				String s1 = "";
-				int size = args.size() > 10 ? 10 : args.size();
+				int size = PKItem.INSTANCE_MAP.values().size() > 10 ? 10 : PKItem.INSTANCE_MAP.values().size();
 				for (int i = 0; i < size; i++) {
 					if (i == size - 2) {
-						s1 = s + " and " + ((PKItem)PKItem.INSTANCE_MAP.values().toArray()[i]).getName();
+						s1 = s1 + " and " + ((PKItem)PKItem.INSTANCE_MAP.values().toArray()[i]).getName();
 					} else {
-						s1 = s + ", " + ((PKItem)PKItem.INSTANCE_MAP.values().toArray()[i]).getName();
+						s1 = s1 + ", " + ((PKItem)PKItem.INSTANCE_MAP.values().toArray()[i]).getName();
 					}
 				}
 				s = s + s1.substring(1);

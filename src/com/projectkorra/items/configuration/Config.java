@@ -1,6 +1,6 @@
 package com.projectkorra.items.configuration;
 
-import com.projectkorra.projectkorra.ProjectKorra;
+import com.projectkorra.items.ProjectKorraItems;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,7 +13,7 @@ import java.io.File;
  */
 public class Config {
 
-	private ProjectKorra plugin;
+	private ProjectKorraItems plugin;
 
 	private File file;
 	private FileConfiguration config;
@@ -24,8 +24,8 @@ public class Config {
 	 * @param file The file to create/load
 	 */
 	public Config(File file) {
-		this.plugin = ProjectKorra.plugin;
-		this.file = new File(plugin.getDataFolder() + File.separator + file);
+		this.plugin = ProjectKorraItems.plugin;
+		this.file = file;
 		this.config = YamlConfiguration.loadConfiguration(this.file);
 		reload();
 	}

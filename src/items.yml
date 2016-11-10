@@ -1,10 +1,10 @@
 ExampleStick:
-    Name: &eThis is an Example Item
+    Name: "&eThis is an Example Item"
     Material: STICK
     Lore: This is some lore!!!!
     Glow: true
 ExampleWool:
-    Name: &4Fire Wool
+    Name: "&4Fire Wool"
     Material: WOOL:14
     Lore: 
     - &cThis wool belongs to the Fire Nation
@@ -12,16 +12,19 @@ ExampleWool:
     Glow: true
     UnshapedRecipe: WOOL, WOOL:3:14, WOOL, example1:3
 ExampleBoots:
-    Name: &2Earth &aWalkers
+    Name: "&2Earth &aWalkers"
     Material: GOLD_BOOTS
     Usage: WEARABLE
-    ShapedRecipe: GOLD_INGOT, AIR, GOLD_INGOT, GOLD_INGOT, DIRT:16, GOLD_INGOT  
+    ShapedRecipe: 
+        Recipe: 
+        - GOLD_INGOT, AIR
+        - GOLD_INGOT, DIRT
     Stats:
         EarthSmashFlySpeed: +25%
         EarthSmashFlyDuration: +25%
         EarthSmashDamage: -15%
 ExampleRod:
-    Name: &4&lBLAZE ROD
+    Name: "&4&lBLAZE ROD"
     Material: BLAZE_ROD
     Durability: 20
     UnshapedRecipe: BLAZE_ROD:3, BLAZE_POWDER:3
@@ -38,7 +41,7 @@ ExampleRod:
             OffsetZ: 0.5
             Speed: 0.05
 ExampleStone:
-    Name: &9Azula Stone
+    Name: "&9Azula Stone"
     Material: REDSTONE
     Lore: Instantly charges Lightning!
     Durability: 1

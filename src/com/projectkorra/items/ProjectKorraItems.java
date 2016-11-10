@@ -12,15 +12,15 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.projectkorra.items.ARCHIVE.PKIListener;
 import com.projectkorra.items.abilityupdater.AbilityUpdater;
 import com.projectkorra.items.attribute.AttributeListener;
 import com.projectkorra.items.command.BaseCommand;
-import com.projectkorra.items.command.EquipCommand;
 import com.projectkorra.items.command.GiveCommand;
 import com.projectkorra.items.command.ListCommand;
+import com.projectkorra.items.command.RecipeCommand;
 import com.projectkorra.items.command.ReloadCommand;
 import com.projectkorra.items.command.StatsCommand;
+import com.projectkorra.items.command.TestCommand;
 import com.projectkorra.items.configuration.ConfigManager;
 import com.projectkorra.items.customs.PKIDisplay;
 
@@ -42,11 +42,13 @@ public class ProjectKorraItems extends JavaPlugin {
 		log.info(pdfFile.getName() + " version " + pdfFile.getVersion() + " has been enabled!");
 		
 		new BaseCommand();
-		new EquipCommand();
+		//new EquipCommand();
 		new GiveCommand();
 		new ListCommand();
 		new ReloadCommand();
 		new StatsCommand();
+		new RecipeCommand();
+		new TestCommand();
 		
 		new ConfigManager();
 		PKIDisplay.displays = new ConcurrentHashMap<Player, PKIDisplay>();
@@ -59,12 +61,19 @@ public class ProjectKorraItems extends JavaPlugin {
 		pm.registerEvents(new AttributeListener(), this);
 		pm.registerEvents(new AbilityUpdater(), this);
 		
-		if (errors.size() >= 0 && Bukkit.getOnlinePlayers().size() > 0) {
+		/*if (errors.size() >= 0 && Bukkit.getOnlinePlayers().size() > 0) {
 			for (String e : errors) {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					p.sendMessage(ChatColor.RED + "[PKItems] " + e);
 				}
 			}
+		}*/
+		
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			for (String e : errors) {
+				p.sendMessage(ChatColor.RED + "[PKItems] " + e);
+			}
+			PKIListener.updateItems(p.getInventory(), p);
 		}
 
 		try {

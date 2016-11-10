@@ -7,9 +7,14 @@ import com.projectkorra.items.attribute.Requirements;
 import com.projectkorra.projectkorra.Element;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -17,28 +22,34 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.material.MaterialData;
 
 public class ConfigManager {
 
 	public static Config itemsConfig;
 	public static Config languageConfig;
-	public static Config recipeConfig;
 	
 	public ConfigManager() {
 		
-		itemsConfig = new Config(new File("items.yml"));
-		languageConfig = new Config(new File("language.yml"));
-		recipeConfig = new Config(new File("recipe.yml"));
+		File itemsFile = new File(ProjectKorraItems.plugin.getDataFolder(), "items.yml");
+		File languageFile = new File(ProjectKorraItems.plugin.getDataFolder(), "language.yml");
+		
+		if (!itemsFile.exists()) {
+			itemsFile.getParentFile().mkdirs();
+			copy(ProjectKorraItems.plugin.getResource("items.yml"), itemsFile);
+		}
+		
+		//We aren't copying the language file. That can be generated.
+		
+		itemsConfig = new Config(itemsFile);
+		languageConfig = new Config(languageFile);
+		
+		//languageConfig.create();
 		
 		checkLanguageFile();
 		loadItems();
-		loadRecipes();
-		
-	}
-	
-	public void loadRecipes() {
-		
 		
 	}
 
@@ -50,6 +61,10 @@ public class ConfigManager {
 		config.addDefault("Item.Load.SurpassMaxItems", "You have defined too many items as the max you can define is 256! Any items defined after this will no longer be usable in game.");
 		config.addDefault("Item.Load.InvalidMaterial", "Failed to load the material of {item}! \"{material}\" is not a valid material!");
 		config.addDefault("Item.Load.InvalidUsage", "Failed to load the usage of {item}! \"{usage}\" is not one of HOLD, WEAR, CONSUMEABLE, CONTAIN");
+		config.addDefault("Item.Load.InvalidRecipe.Shaped", "Failed to load the recipe of {item}! Must have the shape and the output quantity (optional - default is 1)!");
+		config.addDefault("Item.Load.InvalidRecipe.Shapeless", "Failed to load the recipe of {item}! Must have the ingredients and the output quantity (optional - default is 1)!");
+		config.addDefault("Item.Load.InvalidRecipe.ShapedRecipeError", "Failed to load the recipe of {item}! Must have the ingredients and the output quantity (optional - default is 1)!");
+		config.addDefault("Item.Load.InvalidRecipe.InvalidMaterial", "Failed to load the recipe of {item}! \"{material}\" is not a valid material!");
 		
 		config.addDefault("Item.Use.DuplicateID", "This item cannot be used because it has a duplicate ID! Please report this to your admin!");
 		config.addDefault("Item.Use.Break", "Your {item} has broken!");
@@ -72,6 +87,9 @@ public class ConfigManager {
 		config.addDefault("Item.Lore.Usage.Consumable", "Right click while holding to use!");
 		config.addDefault("Item.Lore.Usage.Wearable", "Must be worn for the effects to show!");
 		config.addDefault("Item.Lore.Usage.Hold", "Active while holding!");
+		config.addDefault("Item.Lore.Owned", "Owner: {owner}");
+		
+		languageConfig.save();
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -134,7 +152,7 @@ public class ConfigManager {
 				}
 			}
 			if (configitem.contains("Durability")) {
-				item.setDurability(configitem.getInt("Durability"));
+				item.setDurability((short) configitem.getInt("Durability"));
 			}
 			if (configitem.contains("Usage")) {
 				Usage usage = PKItem.Usage.getUsage(configitem.getString("Usage"));
@@ -177,10 +195,71 @@ public class ConfigManager {
 				}
 				item.setRequirements(requirements);
 			}
+			if (configitem.contains("ShapedRecipe")) {
+				if (configitem.contains("ShapedRecipe.Recipe")) {
+					//Map of all the ingredients and their placeholders (we are using numbers for simplicity)
+					Map<MaterialData, Integer> ingredients = new HashMap<MaterialData, Integer>();
+					List<String> recipe = new ArrayList<String>();
+					for (String line : configitem.getStringList("ShapedRecipe.Recipe")) {
+						
+						String[] materials = null;
+						recipe.add(""); //Adds a new line to the recipe
+						
+						//Split the individual materials with commas and spaces
+						if (line.contains(" ") && line.contains(",")) materials = line.replaceAll(",", "").split(" ");
+						else if (line.contains(" ")) materials = line.split(" ");
+						else if (line.contains(",")) materials = line.split(",");
+						else ProjectKorraItems.createError(languageConfig.get().getString("Item.Load.InvalidRecipe.ShapedRecipeError").replace("{item}", itemName));
+						
+						//If it equals null there's already been an error created ^
+						if (materials != null) {
+							for (String mat : materials) { //Loop through every material on the line
+								
+								MaterialData materialdata = null;
+								
+								if (mat.contains(":")) { //If it contains a : it probably has metadata
+									materialdata = new MaterialData(Material.valueOf(mat.split(":")[0]), Byte.valueOf(mat.split(":")[1]));
+								} else materialdata = new MaterialData(Material.valueOf(mat));
+								
+								if (materialdata.getItemType() == null) {
+									ProjectKorraItems.createError(languageConfig.get().getString("Item.Load.InvalidRecipe.InvalidMaterial")
+											.replace("{item}", itemName).replace("{material}", mat));
+								} else {
+									//If we've already used the material before, resuse the placeholder
+									if (ingredients.containsKey(materialdata)) {
+										//Appends the placeholder to the recipe for the line we are currently on
+										recipe.set(recipe.size() - 1, recipe.get(recipe.size() - 1) + ingredients.get(materialdata));
+									} else {
+										//If not, use the next avaliable number as a placeholder
+										int newplaceholder = ingredients.values().size() + 1;
+										recipe.set(recipe.size() - 1, recipe.get(recipe.size() - 1) + "" + newplaceholder);
+										ingredients.put(materialdata, newplaceholder);
+									}
+									
+								}
+							}
+						}
+					}
+					
+					ItemStack recipeItem = item.buildItem();
+					if (configitem.contains("ShapedRecipe.Amount")) {
+						recipeItem.setAmount(configitem.getInt("ShapedRecipe.Amount"));
+					}
+					
+					ShapedRecipe finalrecipe = new ShapedRecipe(recipeItem);
+					finalrecipe.shape((String[]) recipe.toArray());
+					for (MaterialData material : ingredients.keySet()) {
+						finalrecipe.setIngredient(String.valueOf(ingredients.get(material)).charAt(0), material);
+					}
+					Bukkit.addRecipe(finalrecipe);
+					
+				} else {
+					ProjectKorraItems.createError(languageConfig.get().getString("Item.Load.InvalidRecipe.Shaped").replace("{item}", itemName));
+				}
+			}
 			
 		}
 	}
-
 
 	/**
 	 * Uses a string that represents the configuration file to parse through all
@@ -295,4 +374,19 @@ public class ConfigManager {
 
 		return names;
 	}*/
+	
+	private void copy(InputStream in, File file) {
+	    try {
+	        OutputStream out = new FileOutputStream(file);
+	        byte[] buf = new byte[1024];
+	        int len;
+	        while((len=in.read(buf))>0){
+	            out.write(buf,0,len);
+	        }
+	        out.close();
+	        in.close();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
 }

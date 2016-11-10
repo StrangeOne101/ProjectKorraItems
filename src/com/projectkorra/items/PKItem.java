@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,11 +26,13 @@ public class PKItem {
 	protected String displayName;
 	protected List<String> lore;
 	protected MaterialData material;
-	protected int durability;
+	protected short durability;
 	protected byte ID;
 	protected Usage usage;
 	protected boolean glow = false;
 	protected Requirements req;
+	protected boolean playedLocked = false;
+	protected boolean ignoreBreakMessage = false;
 	
 	public PKItem(String name, byte ID) {
 		if (INSTANCE_MAP.containsKey(ID)) {
@@ -51,24 +54,31 @@ public class PKItem {
 		
 		INSTANCE_MAP.put(ID, this);
 		ConfigManager.itemsConfig.get().set(name + ".SecretID", ((int)ID) + 128);
+		ConfigManager.itemsConfig.save();
 	}
 	
 	public ItemStack buildItem() {
 		@SuppressWarnings("deprecation")
-		ItemStack stack = PKItemStack.loadFromItemStack(new ItemStack(this.material.getItemType(), this.material.getData()));
-		((PKItemStack)stack).setPKIDurability((short) durability);
+		//ItemStack stack = PKItemStack.loadFromItemStack(new ItemStack(this.material.getItemType(), this.material.getData()));
+		//((PKItemStack)stack).setPKIDurability((short) durability);
+		ItemStack stack = new PKItemStack(new ItemStack(this.material.getItemType(), 1, this.material.getData()), ID);
 		stack = updateStack(stack);
 		return updateStack(stack);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public ItemStack updateStack(ItemStack stack) {
+		if (stack.getType() != material.getItemType() || stack.getDurability() != material.getData()) {
+			stack.setData(material);
+		}
+		
 		ItemMeta meta = stack.getItemMeta();
 		
 		if (this.glow) {
 			meta.addEnchant(EnchantGlow.getGlow(), 0, false);
 		}
 		
-		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', this.displayName) + "§k" + hideID(this.ID));
+		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', this.displayName) + hideID(this.ID));
 		
 		List<String> newLore = new ArrayList<String>();
 		
@@ -78,7 +88,13 @@ public class PKItem {
 		
 		//TODO: Get attributes and turn them into a lore
 		
-		lore.add("");
+		if (playedLocked && stack instanceof PKItemStack) {
+			String owner = Bukkit.getOfflinePlayer(((PKItemStack)stack).owner).getName();
+			newLore.add(ChatColor.BLUE + ConfigManager.languageConfig.get().getString("Item.Lore.Owner").replace("{owner}", owner));
+		}
+		
+		newLore.add("");
+		
 		if (this.durability > -1) {
 			
 			short currDurability = (short) this.durability;
@@ -87,21 +103,23 @@ public class PKItem {
 				currDurability = ((PKItemStack)stack).getPKIDurability();
 			}
 			
-			lore.add(ChatColor.BLUE + ConfigManager.languageConfig.get().getString("Item.Lore.Durability")
+			newLore.add(ChatColor.BLUE + ConfigManager.languageConfig.get().getString("Item.Lore.Durability")
 					.replace("{durability}", currDurability + "").replace("{maxdurability}", durability + "")); //First durability 
 		}
 		if (usage == Usage.CONSUMABLE) {
-			lore.add(ChatColor.RED + ConfigManager.languageConfig.get().getString("Item.Lore.Usage.Consumable"));
+			newLore.add(ChatColor.RED + ConfigManager.languageConfig.get().getString("Item.Lore.Usage.Consumable"));
 		}
 		else if (usage == Usage.WEARABLE) {
-			lore.add(ChatColor.RED + ConfigManager.languageConfig.get().getString("Item.Lore.Usage.Wearable"));
+			newLore.add(ChatColor.RED + ConfigManager.languageConfig.get().getString("Item.Lore.Usage.Wearable"));
 		}
 		else if (usage == Usage.HOLD) {
-			lore.add(ChatColor.RED + ConfigManager.languageConfig.get().getString("Item.Lore.Usage.Hold"));
+			newLore.add(ChatColor.RED + ConfigManager.languageConfig.get().getString("Item.Lore.Usage.Hold"));
 		}
 		
+		
+		
 		//Remove blank line if nothing after it
-		if (newLore.get(newLore.size() - 1).equals("")) newLore.remove(newLore.size() - 1); 
+		if (newLore.size() > 1 && newLore.get(newLore.size() - 1).equals("")) newLore.remove(newLore.size() - 1); 
 		
 		meta.setLore(newLore);
 		stack.setItemMeta(meta);
@@ -135,6 +153,7 @@ public class PKItem {
 	
 	/**Returns whether the itemstack is a PKItem or not*/
 	public static boolean isPKItem(ItemStack itemstack) {
+		if (!itemstack.hasItemMeta()) return false;
 		String name = itemstack.getItemMeta().getDisplayName();
 		if (name.split("§k").length == 1) return false;
 		
@@ -164,7 +183,7 @@ public class PKItem {
 		return this;
 	}
 	
-	public PKItem setDurability(int durability) {
+	public PKItem setDurability(short durability) {
 		this.durability = durability;
 		return this;
 	}
@@ -194,6 +213,11 @@ public class PKItem {
 		return this;
 	}
 	
+	public PKItem setPlayerLocked(boolean bool) {
+		this.playedLocked = bool;
+		return this;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -212,6 +236,23 @@ public class PKItem {
 	
 	public MaterialData getMaterial() {
 		return material;
+	}
+	
+	public boolean isPlayedLocked() {
+		return playedLocked;
+	}
+	
+	public short getDurability() {
+		return durability;
+	}
+	
+	public boolean ignoreBreakMessage() {
+		return ignoreBreakMessage;
+	}
+	
+	public PKItem setIgnoreBreakMessage(boolean ignoreBreakMessage) {
+		this.ignoreBreakMessage = ignoreBreakMessage;
+		return this;
 	}
 	
 	public enum Usage {

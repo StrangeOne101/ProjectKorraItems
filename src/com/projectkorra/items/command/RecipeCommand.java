@@ -6,8 +6,8 @@ import org.bukkit.command.CommandSender;
 
 public class RecipeCommand extends PKICommand {
 
-	public RecipeCommand(String name, String properUse, String description, String[] aliases) {
-		super("recipe", "", description, aliases);
+	public RecipeCommand() {
+		super("recipe", "/bending items recipe <list/add/remove/display>", "Allows the user to modify PKI recipes", new String[] {"recip", "r", "recipes"});
 		// TODO Auto-generated constructor stub
 	}
 
