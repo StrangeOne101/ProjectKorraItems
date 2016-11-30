@@ -1,7 +1,6 @@
 package com.projectkorra.items.ARCHIVE;
 
 import com.projectkorra.items.ProjectKorraItems;
-import com.projectkorra.items.attribute.Action;
 import com.projectkorra.items.utils.ElementUtils;
 import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.util.ParticleEffect;

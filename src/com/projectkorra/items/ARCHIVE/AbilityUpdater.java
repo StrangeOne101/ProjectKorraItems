@@ -1,4 +1,4 @@
-package com.projectkorra.items.abilityupdater;
+package com.projectkorra.items.ARCHIVE;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,18 +10,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.projectkorra.items.ProjectKorraItems;
-import com.projectkorra.items.ARCHIVE.Messages;
-import com.projectkorra.items.ARCHIVE.PKItem;
-import com.projectkorra.items.attribute.Attribute;
 import com.projectkorra.items.utils.AttributeUtils;
 import com.projectkorra.items.utils.ItemUtils;
 import com.projectkorra.projectkorra.event.AbilityDamageEntityEvent;
 import com.projectkorra.projectkorra.event.AbilityStartEvent;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 
+@Deprecated
 public class AbilityUpdater implements Listener {
 	
-	@EventHandler
+	/*@EventHandler
 	public void onDamage(AbilityDamageEntityEvent event) {
 		updateAbilityDamage(event.getAbility().getPlayer(), event.getAbility());
 	}
@@ -29,7 +27,7 @@ public class AbilityUpdater implements Listener {
 	@EventHandler
 	public void onStart(AbilityStartEvent event) {
 		updateAbility(event.getAbility().getPlayer(), event.getAbility());
-	}
+	}*/
 
 	/**
 	 * Attempts to update an ability based on the attribute effects of a
@@ -39,7 +37,7 @@ public class AbilityUpdater implements Listener {
 	 * @param player the player that initialized the ability
 	 * @param ability the instance of a ProjectKorra ability
 	 */
-	public static void updateAbility(Player player, Object ability) {
+	/*public static void updateAbility(Player player, Object ability) {
 		if (player == null) {
 			return;
 		}
@@ -65,9 +63,9 @@ public class AbilityUpdater implements Listener {
 		if (abilityAdded) {
 			updatePlayerParticles(player);
 		}
-	}
+	}*/
 	
-	public static void updateAbilityDamage(Player player, Object ability) {
+	/*public static void updateAbilityDamage(Player player, Object ability) {
 		if (player == null) {
 			return;
 		}
@@ -93,7 +91,7 @@ public class AbilityUpdater implements Listener {
 		if (abilityAdded) {
 			updatePlayerParticles(player);
 		}
-	}
+	}*/
 
 	/**
 	 * If the player has an item with the stat "ParticleEffects" then we will
@@ -101,7 +99,7 @@ public class AbilityUpdater implements Listener {
 	 * 
 	 * @param player
 	 */
-	private static void updatePlayerParticles(Player player) {
+	/*private static void updatePlayerParticles(Player player) {
 		ArrayList<ItemStack> equipment = ItemUtils.getPlayerValidEquipment(player);
 		for (ItemStack istack : equipment) {
 			PKItem citem = PKItem.getCustomItem(istack);
@@ -158,5 +156,5 @@ public class AbilityUpdater implements Listener {
 				}
 			}
 		}
-	}
+	}*/
 }

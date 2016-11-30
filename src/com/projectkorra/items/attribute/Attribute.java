@@ -1,211 +1,221 @@
 package com.projectkorra.items.attribute;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.projectkorra.items.ProjectKorraItems;
 import com.projectkorra.projectkorra.Element;
+import com.projectkorra.projectkorra.ability.CoreAbility;
+import com.projectkorra.projectkorra.earthbending.RaiseEarthWall;
+import com.projectkorra.projectkorra.util.ReflectionHandler;
 
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-
-public class Attribute {
+public abstract class Attribute {
+	
+	public enum AttributePriority {
+		HIGHEST(2), HIGH(1), NORMAL(0), LOW(-1), LOWEST(-2);
+		
+		public int power;
+		
+		AttributePriority(int i) {
+			this.power = i;
+		}
+		
+	};
+	
+	
+	
+	private static Map<String, Attribute> attributeList = new HashMap<String, Attribute>();
+	
+	//private static final String[] defaultAttributeTypes = new String[] {"damage", "range", "selectrange", "speed", "cooldown"};
+	
 	private String name;
 	private String desc;
-	private ArrayList<String> values;
-	private Element element;
-	private double duration, time;
-	private int benefit;
-
-	/**
-	 * Creates a new Attribute with a specific name, description, element, and
-	 * benefit.
-	 * 
-	 * @param name the name of the Attribute
-	 * @param desc a description of the Attribute
-	 * @param element if the element belongs to a specific element, this can be
-	 *            null
-	 * @param benefit either -1 or 1, if increasing this attribute causes the
-	 *            player to be better off then the benefit should be 1, else -1.
+	
+	/*
+	 * Fake ability instance passed in for registration, this can be null because
+	 * some attributes don't require an ability instance.
 	 */
-	public Attribute(String name, String desc, Element element, int benefit) {
+	private Class<? extends CoreAbility> ability;
+	
+	/*
+	 * RequireElement, RequireWorld, RequirePermission should be able to prevent other attributes from being
+	 * added to the ability. If this is true then the ability have it's attributes modified. Make sure that if any
+	 * Attributes set this to true then you stop checking other attributes. These attributes should be checked first.
+	 */
+	private boolean canCancelAttributes;
+	
+	/*
+	 * An Attribute wants to cancel, perhaps the user didn't have the required element.
+	 */
+	private boolean canceled;
+	
+	
+	private boolean canCombine;
+	
+	/*
+	 * Some variables that let you decide when you want the handle method to be called.
+	 * You can add more of these if needed.
+	 */
+	private boolean handleOnAbilityStart;
+	private boolean handleOnClick;
+	private boolean handleOnShift;
+	private boolean handleOnPlayerTakeDamage;
+	
+	protected AttributePriority priority;
+
+	public Attribute(String name, String desc, Class<? extends CoreAbility> ability) {
 		this.name = name;
 		this.desc = desc;
-		this.element = element;
-		this.benefit = benefit;
-		this.duration = 0;
-		this.time = 0;
-		values = new ArrayList<String>();
+		this.ability = ability;
+		this.canCancelAttributes = false;
+		this.canceled = false;
+		this.handleOnAbilityStart = true;
+		this.handleOnClick = false;
+		this.handleOnShift = false;
+		this.handleOnPlayerTakeDamage = false;
+		this.priority = AttributePriority.NORMAL;
 	}
 
-	/**
-	 * Copies the details from another Attribute into this Attribute.
+	/***
+	 * Called when the player uses an ability with an item that has this attribute.
 	 * 
-	 * @param other the Attribute to copy
+	 * @param realAbility The ability being created
+	 * @param value The value of the Attribute to be parsed (from the config)
+	 * @return Whether the attribute effected the ability or not. The item will be
+	 * damaged if this returns true.
 	 */
-	public Attribute(Attribute other) {
-		this.name = other.name;
-		this.desc = other.desc;
-		this.time = other.time;
-		this.duration = other.duration;
-		this.element = other.element;
-		this.benefit = other.benefit;
-		this.values = new ArrayList<String>();
-		for (String str : other.values)
-			this.values.add(new String(str));
+	public abstract boolean handle(CoreAbility realAbility, String value);
+
+	public void setHandleOnAbilityStart(boolean handleOnAbilityStart) {
+		this.handleOnAbilityStart = handleOnAbilityStart;
 	}
 
-	public Attribute(String name, String desc, Element element) {
-		this(name, desc, element, 1);
+	public void setHandleOnClick(boolean handleOnClick) {
+		this.handleOnClick = handleOnClick;
 	}
 
-	public Attribute(String name, String desc) {
-		this(name, desc, null);
+	public void setHandleOnShift(boolean handleOnShift) {
+		this.handleOnShift = handleOnShift;
 	}
 
-	public Attribute(String name) {
-		this(name, "");
+	public void setHandleOnPlayerTakeDamage(boolean handleOnPlayerTakeDamage) {
+		this.handleOnPlayerTakeDamage = handleOnPlayerTakeDamage;
+	}
+	
+	public boolean isHandleOnAbilityStart() {
+		return handleOnAbilityStart;
+	}
+	
+	public boolean isHandleOnPlayerTakeDamage() {
+		return handleOnPlayerTakeDamage;
+	}
+	
+	/**Returns whether the provided attribute exists or not*/
+	public static boolean isAttribute(String name) {
+		return attributeList.containsKey(name.toLowerCase());
 	}
 
-	public Attribute() {
-		this("");
+	public static void registerDefaultAttributes() {
+		attributeList.clear();
+		
+		String[] getters = new String[] {"getDamage", "getSpeed", "getCooldown", "getRange", "getSelectRange", "getPower", "getRadius", "getForce"};
+		String[] setters = new String[] {"setDamage", "setSpeed", "setCooldown", "setRange", "setSelectRange", "setPower", "setRadius", "setForce"};
+		String[] attrNames = new String[] {"Damage", "Speed", "Cooldown", "Range", "SelectRange", "Power", "Radius", "Force"};
+		
+		ProjectKorraItems.log.info("Debug length: "+ CoreAbility.getAbilities().size());
+		
+		for (int i = 0; i < getters.length; i++) {
+			
+			for (Element element : Element.getAllElements()) {
+				String name = element.getName() + attrNames[i];
+				String desc = "Sets the " + attrNames[i] + " for all " + element.getName() + " abilities";
+				
+				Attribute attribute = new ElementAttribute(name, desc, element, getters[i], setters[i]);
+				attributeList.put(name.toLowerCase(), attribute);
+			}
+			
+			for (CoreAbility ability : CoreAbility.getAbilities()) {
+				
+				try {
+					//Testing if both the methods exist. If not, continue to the next one.
+					
+					
+					String name = ability.getClass().getName().split("\\.")[ability.getClass().getName().split("\\.").length - 1] + attrNames[i];
+					String desc = "Sets the " + attrNames[i] + " of " + ability.getName();
+					
+					ReflectionHandler.getMethod(ability.getClass(), getters[i]);
+					ReflectionHandler.getMethod(ability.getClass(), setters[i], Double.class);
+					
+					ProjectKorraItems.log.info(name + "| " + desc);
+					
+					Attribute attribute = new DefaultAttribute(name, desc, ability.getClass(), getters[i], setters[i]);
+					attributeList.put(name.toLowerCase(), attribute);
+				} catch (NoSuchMethodException e) {}
+			}
+		}
+		
+		registerAttribute("RaiseEarthWallWidth", RaiseEarthWall.class, "getWidth", "setWidth");
+		registerAttribute("RaiseEarthWallHeight", RaiseEarthWall.class, "getHeight", "setHeight");
+		
+		
+		
+		/*
+		 * Addon developers can registerAttributes from their own code. They do not have
+		 * to provide a CoreAbility if they do not wish to do so.
+		 */
+		/*Attribute fireBlastDamage = new Attribute("FireBlastDamage", "Increases FireBlast Damage", CoreAbility.getAbility("FireBlast")) {
+			@Override
+			public void handle(CoreAbility realAbility, Object value) {
+				if (!(realAbility instanceof FireBlast) || !Utils.isDouble(value)) {
+					return;
+				}
+				FireBlast fb = (FireBlast) realAbility;
+				fb.setDamage(fb.getDamage() * (1 + Double.parseDouble(value)));
+			}
+		};*/
+		
+		//fireBlastDamage.setHandleOnAbilityStart(true); // For example 
+		//ProjectKorraItems.registerAttribute(fireBlastDamage);
 	}
-
+	
+	/***
+	 * Registers a normal attribute for abilities that aren't registered by default.
+	 * 
+	 * @param name The Attribute name. This should be what users have to put in their items config to get this Attribute. E.g. EarthBlastDamage
+	 * @param ability The {@link CoreAbility} that should be effected
+	 * @param getter The name of the getter method that gets the value
+	 * @param setter The name of the setter method that sets the value once it has been changed.
+	 */
+	public static void registerAttribute(String name, Class<? extends CoreAbility> ability, String getter, String setter) {
+		Attribute attribute = new DefaultAttribute(name, "Modifies a value in " + ability.getName(), ability, getter, setter);
+		attributeList.put(name.toLowerCase(), attribute);		
+	}
+	
+	/**
+	 * Register a custom attribute.
+	 * @param attribute The custom attribute
+	 */
+	public static void registerAttribute(CustomAttribute attribute) {
+		attributeList.put(attribute.getName(), attribute);		
+	}
+	
 	public String getName() {
 		return name;
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public double getTime() {
-		return time;
-	}
-
-	public Element getElement() {
-		return element;
-	}
-
-	public void setElement(Element element) {
-		this.element = element;
-	}
-
-	public int getBenefit() {
-		return benefit;
-	}
-
-	public void setBenefit(int benefit) {
-		this.benefit = benefit;
-	}
-
-	public void setTime(double time) {
-		this.time = time;
-	}
-
-	public double getDuration() {
-		return duration;
-	}
-
-	public void setDuration(double duration) {
-		this.duration = duration;
-	}
-
-	public String getDesc() {
+	
+	public String getDescription() {
 		return desc;
 	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
+	
+	public Class<? extends CoreAbility> getAbility() {
+		return ability;
 	}
 
-	public ArrayList<String> getValues() {
-		return values;
+	public AttributePriority getPriority() {
+		return priority;
 	}
-
-	/**
-	 * Attempts to parse the attribute value into a double
-	 * 
-	 * @return the value or 0 the value couldn't be parsed
-	 */
-	public double getValueAsDouble() {
-		if (values.size() == 0)
-			return 0;
-		try {
-			return Double.parseDouble(values.get(0));
-		}
-		catch (NumberFormatException e) {
-			return 0;
-		}
-	}
-
-	public void setValues(ArrayList<String> values) {
-		this.values = values;
-	}
-
-	/**
-	 * Sets the value of this attribute to a double.
-	 * 
-	 * @param val the value of the attribute
-	 */
-	public void setValues(double val) {
-		this.values = new ArrayList<String>();
-		values.add(val + "");
-	}
-
-	/**
-	 * Gets an attribute from the list of attributes if the name matches an
-	 * existing attribute.
-	 * 
-	 * @param name the name of the attribute
-	 * @return an Attribute or null if none was found
-	 */
-	public static Attribute getAttribute(String name) {
-		if (name == null)
-			return null;
-		for (Attribute att : AttributeList.ATTRIBUTES)
-			if (att.getName().equalsIgnoreCase(name))
-				return att;
-		return null;
-	}
-
-	@Override
-	public String toString() {
-		return "Attribute [name=" + name + ", desc=" + desc + ", values=" + values + ", time=" + time + "]";
-	}
-
-	/**
-	 * Returns if this Attribute's name matches name, AND the value of this
-	 * Attribute is not 0.
-	 * 
-	 * @param name the name of the attribute
-	 * @return true if names are equal and it's value isn't 0
-	 */
-	public boolean getBooleanValue(String name) {
-		if (!this.name.equalsIgnoreCase(name))
-			return false;
-		try {
-			boolean val = Integer.parseInt(this.values.get(0)) != 0;
-			return val;
-		}
-		catch (Exception e) {
-		}
-		return false;
-	}
-
-	/**
-	 * Checks if an attribute exists in a map, and if it does makes sure that
-	 * the value is not 0.
-	 * 
-	 * @param name name of the Attribute
-	 * @param map containing attribute names and values
-	 * @return true if name is in map and it's value isn't 0
-	 */
-	public static boolean getBooleanValue(String name, ConcurrentHashMap<String, Double> map) {
-		boolean val = map.containsKey(name);
-		if (val) {
-			try {
-				val = map.get(name).intValue() != 0;
-			}
-			catch (Exception e) {
-			}
-		}
-		return val;
+	
+	public static Attribute valueOf(String string) {
+		return attributeList.get(string.toLowerCase());
 	}
 }

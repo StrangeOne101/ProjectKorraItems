@@ -27,16 +27,15 @@ public class ListCommand extends PKICommand {
 			}*/
 			
 			try {
-				int page = args.size() > 0 ? Integer.parseInt(args.get(0)) - 1 : 0;
-				int maxpage = (PKItem.INSTANCE_MAP.values().size() - 1) / 10;
+				int page = args.size() > 0 ? Integer.parseInt(args.get(0)) : 1;
+				int maxpage = (PKItem.INSTANCE_MAP.values().size() - 1) / 10 + 1;
 				if (page < 1) page = 1;
-				else if (page > maxpage) page = PKItem.INSTANCE_MAP.values().size() / 10 + 1;
-				
+				else if (page > maxpage) page = maxpage;
 				String s = ChatColor.GOLD + "Item Names (Page " + page + " of " + maxpage + "): " + ChatColor.YELLOW;
 				String s1 = "";
 				int max = (page + 1) * 10;
 				max = max > PKItem.INSTANCE_MAP.values().size() ? PKItem.INSTANCE_MAP.values().size() : max;
-				for (int i = page * 10; i < max; i++) {
+				for (int i = (page - 1) * 10; i < max; i++) {
 					if (i == max - 2) {
 						s1 = s1 + " and " + ((PKItem)PKItem.INSTANCE_MAP.values().toArray()[i]).getName();
 					} else {

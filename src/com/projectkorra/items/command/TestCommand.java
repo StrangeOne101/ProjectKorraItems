@@ -40,7 +40,7 @@ public class TestCommand extends PKICommand {
 				if (!PKItem.isPKItem(stack)) {
 					sender.sendMessage(ChatColor.BLUE + "isPKItem(item) = false");
 				} else {
-					sender.sendMessage(ChatColor.BLUE + "PKItem.findID(item) = " + PKItem.findID(stack.getItemMeta().getDisplayName()));
+					sender.sendMessage(ChatColor.BLUE + "PKItem.findID(item) = " + (((int)PKItem.findID(stack.getItemMeta().getDisplayName())) + 128));
 				}
 			} else if (args.get(0).equalsIgnoreCase("getowner")) {
 				if (!PKItem.isPKItem(stack)) {
@@ -60,7 +60,21 @@ public class TestCommand extends PKICommand {
 				}
 			} else if (args.get(0).equalsIgnoreCase("getitems")) {
 				for (PKItem item : PKItem.INSTANCE_MAP.values()) {
-					sender.sendMessage(ChatColor.BLUE + item.getName() + ": " + item.getID());
+					sender.sendMessage(ChatColor.BLUE + item.getName() + ": " + (((int)item.getID()) + 128));
+				}
+			}  else if (args.get(0).equalsIgnoreCase("getidhard")) {
+				if (!stack.hasItemMeta()) sender.sendMessage(ChatColor.BLUE + "No item meta found!");
+				else if (stack.getItemMeta().getDisplayName() == null) sender.sendMessage(ChatColor.BLUE + "No displayname found!");
+				else if (!stack.getItemMeta().getDisplayName().contains("§k")) sender.sendMessage(ChatColor.BLUE + "No magic character found!");
+				else {
+					String refined = stack.getItemMeta().getDisplayName().split("§k")[stack.getItemMeta().getDisplayName().split("§k").length - 1];
+					if (refined.charAt(0) != '§' && refined.charAt(2) != '§') sender.sendMessage(ChatColor.BLUE + "Format invalid!");
+					else {
+						try {
+							Integer.valueOf("" + refined.charAt(1) + refined.charAt(3), 16);
+							sender.sendMessage(ChatColor.BLUE + "ID is fine!");
+						} catch (NumberFormatException e) {sender.sendMessage(ChatColor.BLUE + "Number format exception: " + refined.charAt(1) + refined.charAt(3));}
+					}
 				}
 			}
 		}

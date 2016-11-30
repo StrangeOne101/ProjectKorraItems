@@ -12,8 +12,9 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.projectkorra.items.abilityupdater.AbilityUpdater;
-import com.projectkorra.items.attribute.AttributeListener;
+import com.projectkorra.items.ARCHIVE.AbilityUpdater;
+import com.projectkorra.items.ARCHIVE.AttributeListener;
+import com.projectkorra.items.attribute.Attribute;
 import com.projectkorra.items.command.BaseCommand;
 import com.projectkorra.items.command.GiveCommand;
 import com.projectkorra.items.command.ListCommand;
@@ -38,6 +39,8 @@ public class ProjectKorraItems extends JavaPlugin {
 		ProjectKorraItems.log = this.getLogger();
 		ProjectKorraItems.errors = new ArrayList<String>();
 		
+		Attribute.registerDefaultAttributes();
+		
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info(pdfFile.getName() + " version " + pdfFile.getVersion() + " has been enabled!");
 		
@@ -55,7 +58,7 @@ public class ProjectKorraItems extends JavaPlugin {
 		
 		PluginManager pm = this.getServer().getPluginManager();
 		
-		//
+		
 		
 		pm.registerEvents(new PKIListener(), this);
 		pm.registerEvents(new AttributeListener(), this);

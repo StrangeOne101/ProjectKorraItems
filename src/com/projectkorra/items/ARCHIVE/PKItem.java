@@ -1,8 +1,6 @@
 package com.projectkorra.items.ARCHIVE;
 
 import com.projectkorra.items.ProjectKorraItems;
-import com.projectkorra.items.attribute.Attribute;
-import com.projectkorra.items.attribute.AttributeList;
 import com.projectkorra.items.customs.EnchantGlow;
 import com.projectkorra.items.customs.RecipeIngredient;
 

@@ -6,9 +6,9 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import com.projectkorra.items.ARCHIVE.Attribute;
+import com.projectkorra.items.ARCHIVE.AttributeList;
 import com.projectkorra.items.ARCHIVE.Messages;
-import com.projectkorra.items.attribute.Attribute;
-import com.projectkorra.items.attribute.AttributeList;
 
 public class StatsCommand extends PKICommand {
 

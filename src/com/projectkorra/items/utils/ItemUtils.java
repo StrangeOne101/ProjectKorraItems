@@ -1,21 +1,26 @@
 package com.projectkorra.items.utils;
 
+import com.projectkorra.items.PKItem;
+import com.projectkorra.items.PKItem.Usage;
+import com.projectkorra.items.PKItemStack;
 import com.projectkorra.items.ProjectKorraItems;
-import com.projectkorra.items.ARCHIVE.PKItem;
-import com.projectkorra.items.attribute.Action;
+import com.projectkorra.items.ARCHIVE.AttributeList;
 import com.projectkorra.items.attribute.Attribute;
-import com.projectkorra.items.attribute.AttributeList;
+import com.projectkorra.items.attribute.AttributeData;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ItemUtils {
@@ -23,16 +28,17 @@ public class ItemUtils {
 	/**
 	 * A map of player names that holds their current bending potion effects.
 	 **/
-	public static final ConcurrentHashMap<String, ConcurrentHashMap<String, Attribute>> currentBendingEffects = new ConcurrentHashMap<String, ConcurrentHashMap<String, Attribute>>();
+	//public static final ConcurrentHashMap<String, ConcurrentHashMap<String, Attribute>> currentBendingEffects = new ConcurrentHashMap<String, ConcurrentHashMap<String, Attribute>>();
 
 
 	/**
+	 * <b>NO LONGER USED.</b>
 	 * Returns a list of all of the players effectable items.
 	 * 
 	 * @param player the player with the items
 	 * @return a list of items
 	 */
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	public static ArrayList<ItemStack> getPlayerEquipment(Player player) {
 		ArrayList<ItemStack> istacks = new ArrayList<ItemStack>();
 		for (ItemStack istack : player.getInventory().getArmorContents())
@@ -42,6 +48,7 @@ public class ItemUtils {
 	}
 
 	/**
+	 * <b>NO LONGER USED.</b>
 	 * Returns a list of the players armor and in hand item, ONLY if the item is
 	 * usable for the specific player. If the item has the "HoldOnly",
 	 * "WearOnly", or "RequireElement" stat, then this method may ignore some
@@ -50,7 +57,7 @@ public class ItemUtils {
 	 * @param player the player that has equipment
 	 * @return a list of the equipment
 	 */
-	@SuppressWarnings("deprecation")
+	/*@Deprecated
 	public static ArrayList<ItemStack> getPlayerValidEquipment(Player player) {
 		if (player == null) {
 			return new ArrayList<ItemStack>();
@@ -61,7 +68,7 @@ public class ItemUtils {
 		/*
 		 * Get any inventory items that contain the "AllowFromInventory" stat.
 		 */
-		PlayerInventory playerInv = player.getInventory();
+		/*PlayerInventory playerInv = player.getInventory();
 		for (ItemStack invItem : playerInv) {
 			if (invItem == null || invItem.getType() == Material.AIR)
 				continue;
@@ -100,15 +107,17 @@ public class ItemUtils {
 			}
 		}
 		return equipment;
-	}
+	}*/
 
 	/**
+	 * <b>NO LONGER NEEDED.</b>
 	 * Checks if an item has a usable amount of charges, or doesn't require
-	 * charges at all.
+	 * charges at all. 
 	 * 
 	 * @param item the custom item
 	 * @return true if the item has a usable amount of charges, or no charges
 	 */
+	@Deprecated
 	public static boolean hasValidCharges(ItemStack item) {
 		boolean validCharges = true;
 		try {
@@ -137,6 +146,7 @@ public class ItemUtils {
 	 * @param lore the strings that make up the lore
 	 * @return true if the lore was set correctly
 	 */
+	@Deprecated
 	public static boolean setLore(ItemStack istack, List<String> lore) {
 		if (istack == null || lore == null)
 			return false;
@@ -155,7 +165,7 @@ public class ItemUtils {
 	 * @param player the player receiving the stat modifications
 	 * @param type the type of action that caused this to trigger
 	 */
-	public static void updateOnActionEffects(Player player, Action type) {
+	/*public static void updateOnActionEffects(Player player, Action type) {
 		if (player == null)
 			return;
 
@@ -199,7 +209,7 @@ public class ItemUtils {
 		}
 		if (effectAdded)
 			AttributeUtils.decreaseCharges(player, type);
-	}
+	}*/
 	
 	/**
 	 * Handles the specific stat "WaterSource" and in the future "MetalSource". These stats cause
@@ -209,7 +219,7 @@ public class ItemUtils {
 	 * @param attrib the name of the stat "WaterSource" or "MetalSource"
 	 * @param istack the ItemStack that will temporarily spawn
 	 */
-	public static void handleItemSource(Player player, String attrib, ItemStack istack) {
+	/*public static void handleItemSource(Player player, String attrib, ItemStack istack) {
 		ConcurrentHashMap<String, Double> attribs = AttributeUtils.getSimplePlayerAttributeMap(player);
 		if (attribs.containsKey(attrib) && attribs.get(attrib) == 1) {
 			final PlayerInventory inv = player.getInventory();
@@ -235,5 +245,67 @@ public class ItemUtils {
 				}
 			}.runTaskLater(ProjectKorraItems.plugin, 10);
 		}
+	}*/
+	
+	/**
+	 * Gets a list of all attributes that are active for the provided player
+	 * 
+	 * @param player The player to check
+	 * @return A sorted list of all attributes. From highest priority to lowest
+	 */
+	public static List<AttributeData> getAttributesActive(Player player) {
+		
+		List<AttributeData> data = new ArrayList<AttributeData>();
+		Set<Byte> usedItems = new HashSet<Byte>();
+		
+		for (int i = 0; i < player.getInventory().getArmorContents().length; i++) {
+			ItemStack stack = player.getInventory().getArmorContents()[i];
+			if (stack == null) continue;
+			if (PKItem.isPKItem(stack) && stack instanceof PKItemStack) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
+				PKItem item = PKItem.getPKItem(stack);
+				if (item.getUsage() == Usage.WEARABLE && !usedItems.contains(item.getID())) {
+					for (Attribute attr : item.getAttributes().keySet()) {
+						data.add(new AttributeData(attr, (PKItemStack)stack, item.getAttributes().get(attr)));
+					}
+					usedItems.add(item.getID());
+				}
+			}
+		}
+		
+		for (int i = 0; i < player.getInventory().getStorageContents().length; i++) {
+			ItemStack stack = player.getInventory().getStorageContents()[i];
+			if (stack == null) continue;
+			if (PKItem.isPKItem(stack) && stack instanceof PKItemStack) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
+				PKItem item = PKItem.getPKItem(stack);
+				if (item.getUsage() == Usage.PRESENT && !usedItems.contains(item.getID())) {
+					for (Attribute attr : item.getAttributes().keySet()) {
+						data.add(new AttributeData(attr, (PKItemStack)stack, item.getAttributes().get(attr)));
+					}
+					usedItems.add(item.getID());
+				}
+			}
+		}
+		
+		for (ItemStack stack : new ItemStack[] {player.getInventory().getItemInMainHand(), player.getInventory().getItemInOffHand()}) {
+			if (stack == null) continue;
+			if (PKItem.isPKItem(stack) && stack instanceof PKItemStack) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
+				PKItem item = PKItem.getPKItem(stack);
+				if (item.getUsage() == Usage.HOLD && !usedItems.contains(item.getID())) {
+					player.sendMessage("Debug001");
+					for (Attribute attr : item.getAttributes().keySet()) {
+						data.add(new AttributeData(attr, (PKItemStack)stack, item.getAttributes().get(attr)));
+					}
+					usedItems.add(item.getID());
+				}
+			}
+		}	
+		
+		Collections.sort(data, new Comparator<AttributeData>() {
+			@Override
+			public int compare(AttributeData o1, AttributeData o2) {
+				return o1.getAttribute().getPriority().power - o2.getAttribute().getPriority().power;
+			}
+		});
+		return data;
 	}
 }

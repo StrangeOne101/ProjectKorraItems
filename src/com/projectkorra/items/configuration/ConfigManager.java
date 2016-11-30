@@ -3,6 +3,7 @@ package com.projectkorra.items.configuration;
 import com.projectkorra.items.PKItem;
 import com.projectkorra.items.PKItem.Usage;
 import com.projectkorra.items.ProjectKorraItems;
+import com.projectkorra.items.attribute.Attribute;
 import com.projectkorra.items.attribute.Requirements;
 import com.projectkorra.projectkorra.Element;
 
@@ -24,6 +25,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.material.MaterialData;
 
 public class ConfigManager {
@@ -61,14 +63,18 @@ public class ConfigManager {
 		config.addDefault("Item.Load.SurpassMaxItems", "You have defined too many items as the max you can define is 256! Any items defined after this will no longer be usable in game.");
 		config.addDefault("Item.Load.InvalidMaterial", "Failed to load the material of {item}! \"{material}\" is not a valid material!");
 		config.addDefault("Item.Load.InvalidUsage", "Failed to load the usage of {item}! \"{usage}\" is not one of HOLD, WEAR, CONSUMEABLE, CONTAIN");
-		config.addDefault("Item.Load.InvalidRecipe.Shaped", "Failed to load the recipe of {item}! Must have the shape and the output quantity (optional - default is 1)!");
-		config.addDefault("Item.Load.InvalidRecipe.Shapeless", "Failed to load the recipe of {item}! Must have the ingredients and the output quantity (optional - default is 1)!");
-		config.addDefault("Item.Load.InvalidRecipe.ShapedRecipeError", "Failed to load the recipe of {item}! Must have the ingredients and the output quantity (optional - default is 1)!");
+		config.addDefault("Item.Load.InvalidAttribute", "Attribute {attribute} on item {item} not found. Skipping...");
+		config.addDefault("Item.Load.InvalidRecipe.Shaped", "Failed to load the recipe of {item}! Must have the shape and the output quantity (optional)!");
+		config.addDefault("Item.Load.InvalidRecipe.Shapeless", "Failed to load the recipe of {item}! Must have the ingredients and the output quantity (optional)!");
+		config.addDefault("Item.Load.InvalidRecipe.ShapedRecipeError", "Failed to load the recipe of {item}! Could not parse the recipe line!");
+		config.addDefault("Item.Load.InvalidRecipe.ShapelessRecipeError", "Failed to load the recipe of {item}! Could not parse the ingredients line!");
 		config.addDefault("Item.Load.InvalidRecipe.InvalidMaterial", "Failed to load the recipe of {item}! \"{material}\" is not a valid material!");
 		
 		config.addDefault("Item.Use.DuplicateID", "This item cannot be used because it has a duplicate ID! Please report this to your admin!");
 		config.addDefault("Item.Use.Break", "Your {item} has broken!");
 		config.addDefault("Item.Use.Anvil", "You can't place this item in an anvil!");
+		config.addDefault("Item.Use.Enchant", "You can't enchant this item in an enchantment table!");
+		config.addDefault("Item.Use.Place", "You can't place this item!");
 		
 		config.addDefault("Item.Give.ItemNotFound", "Item {item} not found!");
 		config.addDefault("Item.Give.Disabled", "This item is disabled right now!");
@@ -98,6 +104,8 @@ public class ConfigManager {
 		Random random = new Random();
 		
 		boolean overMax = false;
+		
+		PKItem.INSTANCE_MAP.clear();
 		
 		for (String itemName : config.getKeys(false)) {
 			if (PKItem.INSTANCE_MAP.size() >= 255) {
@@ -168,6 +176,12 @@ public class ConfigManager {
 			if (configitem.contains("Glow")) {
 				item.setGlow(configitem.getBoolean("Glow"));
 			}
+			if (configitem.contains("OwnerLocked")) {
+				item.setPlayerLocked(configitem.getBoolean("OwnerLocked"));
+			}
+			if (configitem.contains("PlayerLocked")) {
+				item.setPlayerLocked(configitem.getBoolean("PlayerLocked"));
+			}
 			if (configitem.contains("Requirements")) {
 				ConfigurationSection req = configitem.getConfigurationSection("Requirements");
 				Requirements requirements = new Requirements();
@@ -194,6 +208,17 @@ public class ConfigManager {
 					requirements.setElements(set);
 				}
 				item.setRequirements(requirements);
+			}
+			if (configitem.contains("Attributes")) {
+				ConfigurationSection attributeList = configitem.getConfigurationSection("Attributes");
+				
+				for (String key : attributeList.getKeys(false)) {
+					if (Attribute.isAttribute(key)) {
+						item.addAttribute(Attribute.valueOf(key), attributeList.getString(key));
+					} else {
+						ProjectKorraItems.log.warning(languageConfig.get().getString("Item.Load.InvalidAttribute").replace("{attribute}", key).replace("{item}", itemName));
+					}
+				}
 			}
 			if (configitem.contains("ShapedRecipe")) {
 				if (configitem.contains("ShapedRecipe.Recipe")) {
@@ -247,7 +272,11 @@ public class ConfigManager {
 					}
 					
 					ShapedRecipe finalrecipe = new ShapedRecipe(recipeItem);
-					finalrecipe.shape((String[]) recipe.toArray());
+					
+					String[] recipeArray = new String[recipe.size()];
+					for (int i = 0; i < recipe.size(); i++) recipeArray[i] = recipe.get(i);
+					
+					finalrecipe.shape(recipeArray);
 					for (MaterialData material : ingredients.keySet()) {
 						finalrecipe.setIngredient(String.valueOf(ingredients.get(material)).charAt(0), material);
 					}
@@ -257,7 +286,39 @@ public class ConfigManager {
 					ProjectKorraItems.createError(languageConfig.get().getString("Item.Load.InvalidRecipe.Shaped").replace("{item}", itemName));
 				}
 			}
-			
+			else if (configitem.contains("ShapelessRecipe")) {
+				if (configitem.contains("ShapelessRecipe.Ingredients")) {
+					String ingredients = configitem.getString("ShapelessRecipe.Ingredients");
+					String[] ingredientsArray = null;
+					
+					//Split the individual materials with commas and spaces
+					if (ingredients.contains(" ") && ingredients.contains(",")) ingredientsArray = ingredients.replaceAll(",", "").split(" ");
+					else if (ingredients.contains(",")) ingredientsArray = ingredients.split(",");
+					else if (ingredients.contains(" ")) ingredientsArray = ingredients.split(" ");
+					else ProjectKorraItems.createError(languageConfig.get().getString("Item.Load.InvalidRecipe.ShapelessRecipeError").replace("{item}", itemName));
+					
+					ItemStack recipeItem = item.buildItem();
+					if (configitem.contains("ShapelessRecipe.Amount")) {
+						recipeItem.setAmount(configitem.getInt("ShapelessRecipe.Amount"));
+					}
+					
+					ShapelessRecipe recipe = new ShapelessRecipe(recipeItem);
+					
+					for (String ingredient : ingredientsArray) {
+						MaterialData materialdata = null;
+						
+						if (ingredient.contains(":")) { //If it contains a : it probably has metadata
+							materialdata = new MaterialData(Material.valueOf(ingredient.split(":")[0]), Byte.valueOf(ingredient.split(":")[1]));
+						} else materialdata = new MaterialData(Material.valueOf(ingredient));
+						
+						recipe.addIngredient(materialdata);
+					}		
+					
+					Bukkit.addRecipe(recipe);
+				} else {
+					ProjectKorraItems.createError(languageConfig.get().getString("Item.Load.InvalidRecipe.Shapeless").replace("{item}", itemName));
+				}
+			}
 		}
 	}
 

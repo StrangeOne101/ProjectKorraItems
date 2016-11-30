@@ -1,7 +1,7 @@
 package com.projectkorra.items.customs;
 
+import com.projectkorra.items.ARCHIVE.Attribute;
 import com.projectkorra.items.ARCHIVE.PKItem;
-import com.projectkorra.items.attribute.Attribute;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

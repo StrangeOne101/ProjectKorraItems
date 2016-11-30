@@ -10,8 +10,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.projectkorra.items.ProjectKorraItems;
-import com.projectkorra.items.attribute.Action;
-import com.projectkorra.items.attribute.AttributeList;
 import com.projectkorra.items.utils.AttributeUtils;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
@@ -63,13 +61,13 @@ public class Glider {
 						return;
 					}
 
-					ConcurrentHashMap<String, Double> attribs = AttributeUtils.getSimplePlayerAttributeMap(player);
+					//ConcurrentHashMap<String, Double> attribs = AttributeUtils.getSimplePlayerAttributeMap(player);
 					if ((!player.isSneaking() && !auto) || (player.isSneaking() && auto)) {
 						this.cancel();
 						return;
 					}
 
-					if (attribs.containsKey("AirGlide")) {
+					/*if (attribs.containsKey("AirGlide")) {
 						double speed = AttributeList.AIR_GLIDE_SPEED;
 						double fallSpeed = AttributeList.AIR_GLIDE_FALL;
 						if (attribs.containsKey("AirGlideSpeed"))
@@ -88,7 +86,7 @@ public class Glider {
 						if (counter == 0)
 							AttributeUtils.decreaseCharges(player, Action.SHIFT);
 						counter++;
-					}
+					}*/
 				}
 			}.runTaskTimer(ProjectKorraItems.plugin, 1, 1);
 		}

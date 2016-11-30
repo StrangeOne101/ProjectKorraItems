@@ -24,8 +24,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.projectkorra.items.ProjectKorraItems;
-import com.projectkorra.items.attribute.Action;
-import com.projectkorra.items.attribute.Attribute;
 import com.projectkorra.items.customs.PKIDisplay;
 import com.projectkorra.items.customs.PKIEquip;
 import com.projectkorra.items.customs.RecipeIngredient;
@@ -409,8 +407,8 @@ public class PKIListener implements Listener {
 
 		// Handles the Charges, and ShiftCharges attribute
 		if (!player.isSneaking()) {
-			ItemUtils.updateOnActionEffects(player, Action.SHIFT);
-			ItemUtils.handleItemSource(player, "WaterSource", new ItemStack(Material.POTION));
+			//ItemUtils.updateOnActionEffects(player, Action.SHIFT);
+			//ItemUtils.handleItemSource(player, "WaterSource", new ItemStack(Material.POTION));
 		}
 	}
 
@@ -428,8 +426,8 @@ public class PKIListener implements Listener {
 		org.bukkit.event.block.Action a = event.getAction();
 		
 		if (a == org.bukkit.event.block.Action.LEFT_CLICK_AIR || a == org.bukkit.event.block.Action.LEFT_CLICK_BLOCK) {
-			ItemUtils.updateOnActionEffects(player, Action.LEFT_CLICK);
-			ItemUtils.handleItemSource(player, "WaterSource", new ItemStack(Material.POTION));
+			//ItemUtils.updateOnActionEffects(player, Action.LEFT_CLICK);
+			//ItemUtils.handleItemSource(player, "WaterSource", new ItemStack(Material.POTION));
 		} else if (a == org.bukkit.event.block.Action.RIGHT_CLICK_AIR || a == org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK) {
 			
 		}
@@ -446,7 +444,7 @@ public class PKIListener implements Listener {
 	public void onPlayerConsume(PlayerItemConsumeEvent event) {
 		if (event.isCancelled())
 			return;
-		ItemUtils.updateOnActionEffects(event.getPlayer(), Action.CONSUME);
+		//ItemUtils.updateOnActionEffects(event.getPlayer(), Action.CONSUME);
 	}
 
 	/**
@@ -461,9 +459,9 @@ public class PKIListener implements Listener {
 			return;
 
 		Player player = event.getPlayer();
-		ConcurrentHashMap<String, Double> attribs = AttributeUtils.getSimplePlayerAttributeMap(player);
-		boolean auto = Attribute.getBooleanValue("AirGlideAutomatic", attribs);
-		if (auto)
-			new Glider(player, true);
+		//ConcurrentHashMap<String, Double> attribs = AttributeUtils.getSimplePlayerAttributeMap(player);
+		//boolean auto = Attribute.getBooleanValue("AirGlideAutomatic", attribs);
+		//if (auto)
+			//new Glider(player, true);
 	}
 }

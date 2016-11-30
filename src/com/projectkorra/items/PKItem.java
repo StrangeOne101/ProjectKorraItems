@@ -2,8 +2,10 @@ package com.projectkorra.items;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
+import com.projectkorra.items.attribute.Attribute;
 import com.projectkorra.items.attribute.Requirements;
 import com.projectkorra.items.configuration.ConfigManager;
 import com.projectkorra.items.customs.EnchantGlow;
@@ -33,11 +36,12 @@ public class PKItem {
 	protected Requirements req;
 	protected boolean playedLocked = false;
 	protected boolean ignoreBreakMessage = false;
+	protected Map<Attribute, String> attributes = new HashMap<Attribute, String>();
 	
 	public PKItem(String name, byte ID) {
 		if (INSTANCE_MAP.containsKey(ID)) {
 			String duplicateID = ConfigManager.languageConfig.get().getString("Item.Load.DuplicateID");
-			duplicateID = duplicateID.replace("{item1}", INSTANCE_MAP.get(ID).name).replace("{item2}", name);
+			duplicateID = duplicateID.replace("{item1}", INSTANCE_MAP.get(ID).name).replace("{item2}", name).replace("{id}", ID + "");
 			ProjectKorraItems.createError(duplicateID);
 			
 			return;
@@ -57,6 +61,11 @@ public class PKItem {
 		ConfigManager.itemsConfig.save();
 	}
 	
+	/**
+	 * Creates a fresh itemstack of the PKItem.
+	 * 
+	 * @return A new ItemStack of the PKItem
+	 */
 	public ItemStack buildItem() {
 		@SuppressWarnings("deprecation")
 		//ItemStack stack = PKItemStack.loadFromItemStack(new ItemStack(this.material.getItemType(), this.material.getData()));
@@ -66,10 +75,20 @@ public class PKItem {
 		return updateStack(stack);
 	}
 	
+	/***
+	 * Updates the ItemStack provided with all the new stats/attributes
+	 * loaded from the config. E.g. if the item type is changed from 
+	 * REDSTONE to GLOWSTONE, this updates it without throwing away
+	 * the old item.
+	 * 
+	 * @param stack The stack to update
+	 * @return The updated ItemStack
+	 */
 	@SuppressWarnings("deprecation")
 	public ItemStack updateStack(ItemStack stack) {
 		if (stack.getType() != material.getItemType() || stack.getDurability() != material.getData()) {
-			stack.setData(material);
+			stack.setType(material.getItemType());
+			stack.setDurability(material.getData());
 		}
 		
 		ItemMeta meta = stack.getItemMeta();
@@ -127,8 +146,10 @@ public class PKItem {
 		return stack;
 	}
 	
-	
-	
+	/**
+	 * <b>USE {@link PKItemStack.canUse} instead!</b>
+	 */
+	@Deprecated
 	public boolean canUse(Player player) {
 		if (!this.req.canUse(player)) {
 			return false;
@@ -138,33 +159,72 @@ public class PKItem {
 	}
 	
 	
-	
-	/**Creates an invisible string for the ID of the PKItem to be hidden in*/
+	/**
+	 * Creates an invisible string for the ID of the PKItem to be hidden in
+	 * 
+	 * @param id The ID of the PKItem
+	 * @return The ID as an invisible string (to itemstacks)
+	 * */
 	public static String hideID(byte id) {
-		String hex = String.format("%02X ", id);
+		String hex = String.format("%02X ", id + 128);
 		return "§k§" + hex.charAt(0) + "§" + hex.charAt(1);
 	}
 	
-	/**Gets the ID from a display name of any PK Item.*/
+	/**
+	 * Gets the ID from a display name of any PK Item. 
+	 * 
+	 * @param name The displayname/string that holds the ID.
+	 * @return The ID of the item.
+	 * @throws NumberFormatException if there is no ID found.
+	 * */
 	public static byte findID(String name) {
 		String refined = name.split("§k")[name.split("§k").length - 1];
-		return Byte.valueOf("" + refined.charAt(1) + refined.charAt(3), 16);
+		int b = Integer.valueOf("" + refined.charAt(1) + refined.charAt(3), 16) - 128;
+		return (byte)b;
 	}
 	
-	/**Returns whether the itemstack is a PKItem or not*/
+	/**
+	 * Gets the PKItem from the itemstack provided. Will return <code>null</code>
+	 * if the itemstack provided is not a PKItem.
+	 * 
+	 * @param itemstack The itemstack that the PKItem is gotten from
+	 * @return The PKItem found or <code>null</code> if not
+	 * */
+	public static PKItem getPKItem(ItemStack itemstack) {
+		if (itemstack == null || !itemstack.hasItemMeta() || !isPKItem(itemstack)) return null;
+		byte b = findID(itemstack.getItemMeta().getDisplayName());
+		
+		if (INSTANCE_MAP.containsKey(b)) return INSTANCE_MAP.get(b);
+		return null;
+	}
+	
+	/**
+	 * Checks an item to see if it contains a hidden ID/is a PKItem.
+	 * 
+	 * @param itemstack The ItemStack being checked
+	 * @return If the item is a PKItem.
+	 * */
 	public static boolean isPKItem(ItemStack itemstack) {
 		if (!itemstack.hasItemMeta()) return false;
 		String name = itemstack.getItemMeta().getDisplayName();
-		if (name.split("§k").length == 1) return false;
+		if (name == null || name.split("§k").length == 1) return false;
 		
 		String refined = name.split("§k")[name.split("§k").length - 1];
 		if (refined.charAt(0) != '§' && refined.charAt(2) != '§') return false;
 		try {
-			Byte.valueOf("" + refined.charAt(1) + refined.charAt(3), 16);
-			return true;
+			return Integer.valueOf("" + refined.charAt(1) + refined.charAt(3), 16) < 256;
 		} catch (NumberFormatException e) {return false;}
 	}
 	
+	/**
+	 * Gets the PKItem from the string provided. This must be
+	 * the name of the item provided in the config (not the
+	 * display name)
+	 * 
+	 * @param name The name of the item
+	 * @return The PKItem or <code>null</code> if it's not a 
+	 * valid PKItem
+	 * */
 	public static PKItem getItemFromName(String name) {
 		for (PKItem item : INSTANCE_MAP.values()) {
 			if (item.getName().equalsIgnoreCase(name)) {
@@ -172,6 +232,14 @@ public class PKItem {
 			}
 		}
 		return null;
+	}
+	
+	public void addAttribute(Attribute attribute, String value) {
+		attributes.put(attribute, value);
+	}
+	
+	public Map<Attribute, String> getAttributes() {
+		return attributes;
 	}
 	
 	public void setRequirements(Requirements req) {
@@ -230,6 +298,10 @@ public class PKItem {
 		return ID;
 	}
 	
+	public Usage getUsage() {
+		return usage;
+	}
+	
 	public List<String> getLore() {
 		return lore;
 	}
@@ -258,6 +330,13 @@ public class PKItem {
 	public enum Usage {
 		CONSUMABLE, WEARABLE, HOLD, PRESENT;
 		
+		
+		/***
+		 * Parses the provided string and returns what usage type 
+		 * it is
+		 * @param string The string that should be parsed
+		 * @return The Usage type or <code>null</code> if not found
+		 */
 		public static Usage getUsage(String string) {
 			if (string.equalsIgnoreCase("consumable") || string.equalsIgnoreCase("consume") || string.equalsIgnoreCase("potion")) {
 				return CONSUMABLE;

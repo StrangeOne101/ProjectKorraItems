@@ -11,12 +11,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.projectkorra.items.ARCHIVE.Action;
+import com.projectkorra.items.ARCHIVE.Attribute;
+import com.projectkorra.items.ARCHIVE.AttributeList;
+import com.projectkorra.items.ARCHIVE.AttributeListener;
 import com.projectkorra.items.ARCHIVE.Messages;
 import com.projectkorra.items.ARCHIVE.PKItem;
-import com.projectkorra.items.attribute.Action;
-import com.projectkorra.items.attribute.Attribute;
-import com.projectkorra.items.attribute.AttributeList;
-import com.projectkorra.items.attribute.AttributeListener;
 import com.projectkorra.projectkorra.Element;
 
 public class AttributeUtils {
@@ -29,32 +29,33 @@ public class AttributeUtils {
 	 * @param player the player to create the effects of
 	 * @return a map containing attribute effects
 	 */
+	/*@Deprecated
 	public static ConcurrentHashMap<String, Double> getSimplePlayerAttributeMap(Player player) {
 		ArrayList<ItemStack> equipment = ItemUtils.getPlayerValidEquipment(player);
 		ConcurrentHashMap<String, Double> attribMap = new ConcurrentHashMap<String, Double>();
 		ArrayList<Attribute> totalAttribs = new ArrayList<Attribute>();
 
 		/* Handle any potion style bending effects that the player might have */
-		if (AttributeListener.currentBendingEffects.containsKey(player.getName())) {
+		/*if (AttributeListener.currentBendingEffects.containsKey(player.getName())) {
 			ConcurrentHashMap<String, Attribute> effects = AttributeListener.currentBendingEffects.get(player.getName());
 			for (Attribute effect : effects.values()) {
 				if (System.currentTimeMillis() - effect.getTime() < effect.getDuration()) {
 					totalAttribs.add(effect);
 				}
 			}
-		}
+		}*/
 
 		/* Handle any armor bending effects */
-		for (ItemStack istack : equipment) {
+		/*for (ItemStack istack : equipment) {
 			PKItem citem = PKItem.getCustomItem(istack);
 			if (citem == null)
 				continue;
 			for (Attribute attr : citem.getAttributes())
 				totalAttribs.add(attr);
-		}
+		}*/
 
 		/* Handles the "Air", "Water", "Earth", and "Fire" stats */
-		ArrayList<Attribute> fullElementAttribs = new ArrayList<Attribute>();
+		/*ArrayList<Attribute> fullElementAttribs = new ArrayList<Attribute>();
 		for (Attribute attr : totalAttribs) {
 			fullElementAttribs.addAll(getFullElementAttributes(attr));
 		}
@@ -71,7 +72,7 @@ public class AttributeUtils {
 			attribMap.put(attr.getName(), val);
 		}
 		return attribMap;
-	}
+	}*/
 
 	/**
 	 * Takes an attribute stat and tries to split its values into a list of
@@ -152,7 +153,7 @@ public class AttributeUtils {
 	 * @param type the action that caused the charge decrease
 	 */
 	
-	public static void decreaseCharges(Player player, Action type) {
+	/*public static void decreaseCharges(Player player, Action type) {
 		if (player == null)
 			return;
 
@@ -214,7 +215,7 @@ public class AttributeUtils {
 				}
 				catch (Exception e) {
 				}
-			}
+			}*/
 
 			/*
 			 * When we go to destroy an item we need to check that there were
@@ -222,7 +223,7 @@ public class AttributeUtils {
 			 * then we need to just remove 1 and change the lore back to the
 			 * start.
 			 */
-			if (!hasChargesLeft && !hasIgnoreDestroyMsg && displayDestroyMsg)
+			/*if (!hasChargesLeft && !hasIgnoreDestroyMsg && displayDestroyMsg)
 				player.sendMessage(citem.getDisplayName() + " " + Messages.ITEM_DESTROYED);
 			if (hasDestroyAttr && !hasChargesLeft) {
 				if (player.getInventory().contains(istack)) {
@@ -249,7 +250,7 @@ public class AttributeUtils {
 				}
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Given an attribute with a name of "Air", "Water", "Earth", or "Fire" this
