@@ -1,27 +1,24 @@
 package com.projectkorra.items.utils;
 
-import com.projectkorra.items.PKItem;
-import com.projectkorra.items.PKItem.Usage;
-import com.projectkorra.items.PKItemStack;
-import com.projectkorra.items.ProjectKorraItems;
-import com.projectkorra.items.ARCHIVE.AttributeList;
-import com.projectkorra.items.attribute.Attribute;
-import com.projectkorra.items.attribute.AttributeData;
-
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import com.projectkorra.items.PKItem;
+import com.projectkorra.items.PKItem.Usage;
+import com.projectkorra.items.ARCHIVE.AttributeList;
+import com.projectkorra.items.attribute.Attribute;
+import com.projectkorra.items.attribute.AttributeModification;
+import com.projectkorra.items.attribute.old.AttributeData;
 
 public class ItemUtils {
 	
@@ -253,21 +250,22 @@ public class ItemUtils {
 	 * @param player The player to check
 	 * @return A sorted list of all attributes. From highest priority to lowest
 	 */
-	public static List<AttributeData> getAttributesActive(Player player) {
+	@Deprecated
+	public static List<AttributeData> getAttributesActive_(Player player) {
 		
 		List<AttributeData> data = new ArrayList<AttributeData>();
-		Set<Byte> usedItems = new HashSet<Byte>();
+		Set<PKItem> usedItems = new HashSet<PKItem>();
 		
 		for (int i = 0; i < player.getInventory().getArmorContents().length; i++) {
 			ItemStack stack = player.getInventory().getArmorContents()[i];
 			if (stack == null) continue;
-			if (PKItem.isPKItem(stack) && stack instanceof PKItemStack) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
+			if (PKItem.isPKItem(stack) && PKItem.isValidItem(stack)) { //If it isn't a valid PKItem that can be used, don't use it.
 				PKItem item = PKItem.getPKItem(stack);
-				if (item.getUsage() == Usage.WEARABLE && !usedItems.contains(item.getID())) {
+				if (item.getUsage() == Usage.WEARABLE && !usedItems.contains(item)) {
 					for (Attribute attr : item.getAttributes().keySet()) {
-						data.add(new AttributeData(attr, (PKItemStack)stack, item.getAttributes().get(attr)));
+						//data.add(new AttributeData(attr, item, stack, item.getAttributes().get(attr)));
 					}
-					usedItems.add(item.getID());
+					usedItems.add(item);
 				}
 			}
 		}
@@ -275,27 +273,27 @@ public class ItemUtils {
 		for (int i = 0; i < player.getInventory().getStorageContents().length; i++) {
 			ItemStack stack = player.getInventory().getStorageContents()[i];
 			if (stack == null) continue;
-			if (PKItem.isPKItem(stack) && stack instanceof PKItemStack) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
+			if (PKItem.isPKItem(stack) && PKItem.isValidItem(stack)) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
 				PKItem item = PKItem.getPKItem(stack);
-				if (item.getUsage() == Usage.PRESENT && !usedItems.contains(item.getID())) {
+				if (item.getUsage() == Usage.PRESENT && !usedItems.contains(item)) {
 					for (Attribute attr : item.getAttributes().keySet()) {
-						data.add(new AttributeData(attr, (PKItemStack)stack, item.getAttributes().get(attr)));
+						//data.add(new AttributeData(attr, item, stack, item.getAttributes().get(attr)));
 					}
-					usedItems.add(item.getID());
+					usedItems.add(item);
 				}
 			}
 		}
 		
 		for (ItemStack stack : new ItemStack[] {player.getInventory().getItemInMainHand(), player.getInventory().getItemInOffHand()}) {
 			if (stack == null) continue;
-			if (PKItem.isPKItem(stack) && stack instanceof PKItemStack) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
+			if (PKItem.isPKItem(stack) && PKItem.isValidItem(stack)) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
 				PKItem item = PKItem.getPKItem(stack);
-				if (item.getUsage() == Usage.HOLD && !usedItems.contains(item.getID())) {
+				if (item.getUsage() == Usage.HOLD && !usedItems.contains(item)) {
 					player.sendMessage("Debug001");
 					for (Attribute attr : item.getAttributes().keySet()) {
-						data.add(new AttributeData(attr, (PKItemStack)stack, item.getAttributes().get(attr)));
+						//data.add(new AttributeData(attr, item, stack, item.getAttributes().get(attr)));
 					}
-					usedItems.add(item.getID());
+					usedItems.add(item);
 				}
 			}
 		}	
@@ -306,6 +304,67 @@ public class ItemUtils {
 				return o1.getAttribute().getPriority().power - o2.getAttribute().getPriority().power;
 			}
 		});
+		return data;
+	}
+	
+	/**
+	 * Gets a list of all attributes that are active for the provided player
+	 * 
+	 * @param player The player to check
+	 * @return A sorted list of all attributes. From highest priority to lowest
+	 */
+	public static Map<AttributeModification, ItemStack> getAttributesActive(Player player) {
+		
+		Map<AttributeModification, ItemStack> data = new HashMap<AttributeModification, ItemStack>();
+		Set<PKItem> usedItems = new HashSet<PKItem>();
+		
+		for (int i = 0; i < player.getInventory().getArmorContents().length; i++) {
+			ItemStack stack = player.getInventory().getArmorContents()[i];
+			if (stack == null) continue;
+			if (PKItem.isPKItem(stack) && PKItem.isValidItem(stack)) { //If it isn't a valid PKItem that can be used, don't use it.
+				PKItem item = PKItem.getPKItem(stack);
+				if (item.getUsage() == Usage.WEARABLE && !usedItems.contains(item)) {
+					for (AttributeModification attr : item.getAttributes().values()) {
+						data.put(attr, stack);
+					}
+					usedItems.add(item);
+				}
+			}
+		}
+		
+		for (int i = 0; i < player.getInventory().getStorageContents().length; i++) {
+			ItemStack stack = player.getInventory().getStorageContents()[i];
+			if (stack == null) continue;
+			if (PKItem.isPKItem(stack) && PKItem.isValidItem(stack)) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
+				PKItem item = PKItem.getPKItem(stack);
+				if (item.getUsage() == Usage.PRESENT && !usedItems.contains(item)) {
+					for (AttributeModification attr : item.getAttributes().values()) {
+						data.put(attr, stack);
+					}
+					usedItems.add(item);
+				}
+			}
+		}
+		
+		for (ItemStack stack : new ItemStack[] {player.getInventory().getItemInMainHand(), player.getInventory().getItemInOffHand()}) {
+			if (stack == null) continue;
+			if (PKItem.isPKItem(stack) && PKItem.isValidItem(stack)) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
+				PKItem item = PKItem.getPKItem(stack);
+				if (item.getUsage() == Usage.HOLD && !usedItems.contains(item)) {
+					player.sendMessage("Debug001");
+					for (AttributeModification attr : item.getAttributes().values()) {
+						data.put(attr, stack);
+					}
+				}
+			}
+		}	
+		
+		/*Collections.sort(data, new Comparator<AttributeModification>() {
+			@Override
+			public int compare(AttributeModification o1, AttributeModification o2) {
+				return o1.getAttribute().getPrefix().getPriority().getPower() - o2.getAttribute().getPrefix().getPriority().getPower();
+			}
+		});*/
 		return data;
 	}
 }

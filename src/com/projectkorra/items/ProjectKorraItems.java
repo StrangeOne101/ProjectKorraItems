@@ -7,14 +7,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import com.projectkorra.items.ARCHIVE.AbilityUpdater;
 import com.projectkorra.items.ARCHIVE.AttributeListener;
-import com.projectkorra.items.attribute.Attribute;
+import com.projectkorra.items.attribute.AttributeBuilder;
 import com.projectkorra.items.command.BaseCommand;
 import com.projectkorra.items.command.GiveCommand;
 import com.projectkorra.items.command.ListCommand;
@@ -39,7 +40,18 @@ public class ProjectKorraItems extends JavaPlugin {
 		ProjectKorraItems.log = this.getLogger();
 		ProjectKorraItems.errors = new ArrayList<String>();
 		
-		Attribute.registerDefaultAttributes();
+		//AttributeOld.registerDefaultAttributes();
+		new BukkitRunnable() { //Register once the server is finished setting up. Runnables will do this.
+			@Override
+			public void run() {
+				AttributeBuilder.setupPrefixes();
+				AttributeBuilder.setupSuffixes();
+				AttributeBuilder.setupAttributes();
+				
+				new ConfigManager(); //Load config after attributes are loaded
+			}
+		}.runTaskLater(this, 1L);
+		
 		
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info(pdfFile.getName() + " version " + pdfFile.getVersion() + " has been enabled!");
@@ -53,7 +65,7 @@ public class ProjectKorraItems extends JavaPlugin {
 		new RecipeCommand();
 		new TestCommand();
 		
-		new ConfigManager();
+		
 		PKIDisplay.displays = new ConcurrentHashMap<Player, PKIDisplay>();
 		
 		PluginManager pm = this.getServer().getPluginManager();
@@ -62,7 +74,7 @@ public class ProjectKorraItems extends JavaPlugin {
 		
 		pm.registerEvents(new PKIListener(), this);
 		pm.registerEvents(new AttributeListener(), this);
-		pm.registerEvents(new AbilityUpdater(), this);
+		//pm.registerEvents(new AbilityUpdater(), this);
 		
 		/*if (errors.size() >= 0 && Bukkit.getOnlinePlayers().size() > 0) {
 			for (String e : errors) {

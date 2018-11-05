@@ -1,26 +1,34 @@
-package com.projectkorra.items.attribute;
+package com.projectkorra.items.attribute.old;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.projectkorra.items.utils.GenericUtil;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.util.ReflectionHandler;
 
-public class DefaultAttribute extends Attribute {
+public class DefaultAttribute extends AttributeOld {
 
-	public String getter;
-	public String setter;
+	protected String getter;
+	protected String setter;
+	
+	protected List<Class<? extends CoreAbility>> abilities = new ArrayList<Class<? extends CoreAbility>>();
 	
 	public DefaultAttribute(String name, String desc, Class<? extends CoreAbility> ability, String getter, String setter) {
 		super(name, desc, ability);
 		
 		this.getter = getter;
 		this.setter = setter;
+		
+		if (ability != null) {
+			this.abilities.add(ability);
+		}
 	}
 
 	@Override
 	public boolean handle(CoreAbility realAbility, String value) {
-		if (!realAbility.getClass().equals(this.getAbility())) return false;
+		if (!abilities.contains(realAbility.getClass())) return false;
 		
 		value = value.replaceAll(" ", "");
 		
@@ -57,7 +65,7 @@ public class DefaultAttribute extends Attribute {
 				newValue = Double.parseDouble(value);
 			}
 			
-			Method method2 = ReflectionHandler.getMethod(realAbility.getClass(), setter);
+			Method method2 = ReflectionHandler.getMethod(realAbility.getClass(), setter, Double.class);
 			method2.invoke(realAbility, newValue); //Set the value again
 			
 			return true;
@@ -70,4 +78,8 @@ public class DefaultAttribute extends Attribute {
 		return false; 
 	}
 
+	public void addAbility(Class<? extends CoreAbility> ability) {
+		this.abilities.add(ability);
+	}
+	
 }

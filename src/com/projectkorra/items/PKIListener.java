@@ -2,25 +2,32 @@ package com.projectkorra.items;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.projectkorra.items.attribute.AttributeData;
+import com.projectkorra.items.attribute.Attribute.AttributeEvent;
+import com.projectkorra.items.attribute.AttributeModification;
 import com.projectkorra.items.configuration.ConfigManager;
+import com.projectkorra.items.recipe.PKIRecipe;
+import com.projectkorra.items.utils.GenericUtil;
 import com.projectkorra.items.utils.ItemUtils;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.event.AbilityStartEvent;
@@ -78,15 +85,11 @@ public class PKIListener implements Listener
 	public void onPickupItem(InventoryPickupItemEvent event) {
 		if (event.isCancelled()) return;
 		
-		if (PKItem.isPKItem(event.getItem().getItemStack())) {
-			ItemStack pkitemstack = PKItemStack.loadFromItemStack(event.getItem().getItemStack());
-			if (pkitemstack == null) {
-				pkitemstack = PKItemStack.getDudItem(PKItem.findID(event.getItem().getItemStack().getItemMeta().getDisplayName()), false);
+		if (PKItem.isPKItem(event.getItem().getItemStack())) { 
+			short id = PKItem.findID(event.getItem().getItemStack().getItemMeta().getDisplayName());
+			if (!PKItem.isValidID(id)) {
+				event.getItem().setItemStack(PKItem.getDudItem(id, false));
 			}
-			
-			event.getItem().setItemStack(pkitemstack);
-			//event.getItem().getItemStack().setType(pkitemstack.getType());
-			//event.getItem().getItemStack().setItemMeta(pkitemstack.getItemMeta());
 		}
 	}
 	
@@ -95,44 +98,40 @@ public class PKIListener implements Listener
 		if (event.isCancelled()) return;
 		
 		Player p = event.getPlayer();
-		
-		if (PKItem.isPKItem(event.getItem().getItemStack())) {
+		if (PKItem.isPKItem(event.getItem().getItemStack())) { 
 			p.sendMessage(ChatColor.BLUE + "PKItem Picked Up."); //DEBUG
-			ItemStack pkitemstack = PKItemStack.loadFromItemStack(event.getItem().getItemStack());
-			if (pkitemstack == null) {
-				p.sendMessage(ChatColor.BLUE + "Making dud item"); //DEBUG
-				
-				pkitemstack = PKItemStack.getDudItem(PKItem.findID(event.getItem().getItemStack().getItemMeta().getDisplayName()), p.hasPermission("bendingitems.admin"));
+			short id = PKItem.findID(event.getItem().getItemStack().getItemMeta().getDisplayName());
+			if (!PKItem.isValidID(id)) {
+				event.getItem().setItemStack(PKItem.getDudItem(id, event.getPlayer().hasPermission("bendingitems.admin")));
+				event.getPlayer().sendMessage(ChatColor.BLUE + "Found dud item with ID: " + GenericUtil.convertSignedShort(id));
 			}
-			
-			event.getItem().setItemStack(pkitemstack);
-			//event.getItem().getItemStack().setType(pkitemstack.getType());
-			//event.getItem().getItemStack().setItemMeta(pkitemstack.getItemMeta());
+			else event.getPlayer().sendMessage(ChatColor.BLUE + "Updated PKItem: " + event.getItem().getItemStack().getItemMeta().getDisplayName());
 		}
 	}
 	
 	@EventHandler
 	public void onAbilityStart(AbilityStartEvent event) {
 		if (event.isCancelled()) return;
-		event.getAbility().getPlayer().sendMessage("Debug100");
-		List<AttributeData> attributes = ItemUtils.getAttributesActive(event.getAbility().getPlayer());
-		List<PKItemStack> itemsToDamage = new ArrayList<PKItemStack>();
+		//event.getAbility().getPlayer().sendMessage("Debug100");
+		Map<AttributeModification, ItemStack> attributes = ItemUtils.getAttributesActive(event.getAbility().getPlayer());
+		List<ItemStack> itemsToDamage = new ArrayList<ItemStack>();
 		
-		for (AttributeData attrdata : attributes) { //Sorted from high to low priority
-			if (attrdata.getAttribute().isHandleOnAbilityStart()) {
+		for (AttributeModification attrdata : attributes.keySet()) { //Sorted from high to low priority
+			if (attrdata.getAttribute().getEvent() == AttributeEvent.ABILITY_START) {
 				event.getAbility().getPlayer().sendMessage("Debug101");
-				if (attrdata.modifyAbility((CoreAbility) event.getAbility())) { //Modify the ability from the attribute
+				if (attrdata.performModification((CoreAbility) event.getAbility())) { //Modify the ability from the attribute
 					event.getAbility().getPlayer().sendMessage("Debug102");
-					if (!itemsToDamage.contains(attrdata.getStack())) {
-						itemsToDamage.add(attrdata.getStack());
+					if (!itemsToDamage.contains(attributes.get(attrdata))) {
+						itemsToDamage.add(attributes.get(attrdata));
 						event.getAbility().getPlayer().sendMessage("Debug103");
 					}
 				}
 			}
 		}
 		
-		for (PKItemStack stack : itemsToDamage) {
-			stack.damageItem(event.getAbility().getPlayer());
+		for (ItemStack stack : itemsToDamage) {
+			PKItem item = PKItem.getPKItem(stack);
+			item.damageItem(event.getAbility().getPlayer(), stack);
 			event.getAbility().getPlayer().sendMessage("Debug104");
 		}
 	}
@@ -143,14 +142,34 @@ public class PKIListener implements Listener
 			if (stack == null) continue;
 			//If it is a PKItem that hasn't been updated since server start
 			if (PKItem.isPKItem(stack)) { 
-				ItemStack pkitemstack = PKItemStack.loadFromItemStack(stack);
-				if (pkitemstack == null) {
-					pkitemstack = PKItemStack.getDudItem(PKItem.findID(stack.getItemMeta().getDisplayName()), player.hasPermission("bendingitems.admin"));
+				
+				short id = PKItem.findID(stack.getItemMeta().getDisplayName());
+				if (!PKItem.isValidID(id)) {
+					inv.getContents()[i] = PKItem.getDudItem(id, player.hasPermission("bendingitems.admin"));
+					player.sendMessage(ChatColor.BLUE + "Found dud item with ID: " + GenericUtil.convertSignedShort(id));
 				}
-				if (pkitemstack instanceof PKItemStack) player.sendMessage(ChatColor.BLUE + "Overrid Itemstack: " + stack.getItemMeta().getDisplayName());
-				else player.sendMessage(ChatColor.BLUE + "Did not become PKItemstack: " + stack.getItemMeta().getDisplayName());
-				inv.getContents()[i] = pkitemstack;
+				
+				else player.sendMessage(ChatColor.BLUE + "Updated PKItem: " + stack.getItemMeta().getDisplayName());
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onCraft(CraftItemEvent event) {
+		if (event.isCancelled()) return;
+		
+		if (event.getRecipe() instanceof PKIRecipe) {
+			PKItem pkitem = ((PKIRecipe)event.getRecipe()).getItem();
+			PKItem.setOwner(event.getCurrentItem(), event.getWhoClicked().getUniqueId());
+		}
+	}
+	
+	@EventHandler
+	public void preCraft(PrepareItemCraftEvent event) {
+		if (event.getRecipe() instanceof PKIRecipe && event.getView().getPlayer() instanceof Player) {
+			CraftingInventory inv = event.getInventory();
+			PKItem pkitem = ((PKIRecipe)event.getRecipe()).getItem();
+			inv.setResult(pkitem.buildItem((Player)event.getView().getPlayer()));
 		}
 	}
 }

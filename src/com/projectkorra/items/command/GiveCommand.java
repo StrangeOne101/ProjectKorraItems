@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.projectkorra.items.PKItem;
-import com.projectkorra.items.PKItemStack;
 import com.projectkorra.items.configuration.ConfigManager;
 
 public class GiveCommand extends PKICommand {
@@ -51,10 +50,15 @@ public class GiveCommand extends PKICommand {
 				Player player = (Player)sender;
 				
 				PKItem item = PKItem.getItemFromName(args.get(0));
-				ItemStack itemstack = item.buildItem();
-				if (itemstack instanceof PKItemStack) {
-					((PKItemStack)itemstack).setOwner(player.getUniqueId());
+				
+				if (item == null) {
+					sender.sendMessage(ChatColor.RED + ConfigManager.languageConfig.get().getString("Item.Give.ItemNotFound"));
+					return;
 				}
+				
+				ItemStack itemstack = item.buildItem();
+				PKItem.setOwner(itemstack, player.getUniqueId());
+				
 				if (args.size() >= 2) {
 					try {
 						int amount = Integer.parseInt(args.get(1));
@@ -71,9 +75,8 @@ public class GiveCommand extends PKICommand {
 						sender.sendMessage(ChatColor.RED + ConfigManager.languageConfig.get().getString("Item.Command.PlayerNotFound"));
 						return;
 					}
-					if (itemstack instanceof PKItemStack) {
-						((PKItemStack)itemstack).setOwner(target.getUniqueId());
-					}
+					PKItem.setOwner(itemstack, target.getUniqueId());
+					
 					target.getInventory().addItem(itemstack);
 					target.sendMessage(ChatColor.YELLOW + ConfigManager.languageConfig.get().getString("Item.Give.GiveToPlayer"));
 				} else {

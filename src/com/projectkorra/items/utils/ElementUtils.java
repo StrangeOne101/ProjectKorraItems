@@ -1,5 +1,7 @@
 package com.projectkorra.items.utils;
 
+import java.util.Arrays;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -41,12 +43,7 @@ public class ElementUtils {
 	 * @param mat the material to check
 	 * @return true if it is transparent
 	 */
-	@SuppressWarnings("deprecation")
 	public static boolean isTransparent(Material mat) {
-		for (int m : EarthAbility.getTransparentMaterial()) {
-			if (mat.getId() == m)
-				return true;
-		}
-		return false;
+		return Arrays.asList(EarthAbility.getTransparentMaterials()).contains(mat);
 	}
 }

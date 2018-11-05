@@ -4,7 +4,11 @@ import com.projectkorra.items.PKItem;
 import com.projectkorra.items.PKItem.Usage;
 import com.projectkorra.items.ProjectKorraItems;
 import com.projectkorra.items.attribute.Attribute;
+import com.projectkorra.items.attribute.AttributeModification;
 import com.projectkorra.items.attribute.Requirements;
+import com.projectkorra.items.attribute.old.AttributeOld;
+import com.projectkorra.items.recipe.PKIShapelessRecipe;
+import com.projectkorra.items.utils.GenericUtil;
 import com.projectkorra.projectkorra.Element;
 
 import java.io.File;
@@ -21,6 +25,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -106,9 +111,11 @@ public class ConfigManager {
 		boolean overMax = false;
 		
 		PKItem.INSTANCE_MAP.clear();
+	
+		int max = (int) Math.pow(Short.SIZE, 2); //The max number of possibilities of shorts
 		
 		for (String itemName : config.getKeys(false)) {
-			if (PKItem.INSTANCE_MAP.size() >= 255) {
+			if (PKItem.INSTANCE_MAP.size() >= max) {
 				if (!overMax) {
 					ProjectKorraItems.createError(languageConfig.get().getString("Item.Load.SurpassMaxItems"));
 					overMax = true;
@@ -116,16 +123,16 @@ public class ConfigManager {
 				PKItem.DISABLED.add(itemName);
 			}
 			
-			byte id;
+			short id;
 			
 			ConfigurationSection configitem = config.getConfigurationSection(itemName);
 
 			if (config.contains(itemName + ".SecretID")) {
-				id = (byte) (config.getInt(itemName + ".SecretID") - 128);
+				id = GenericUtil.convertUnsignedShort(config.getInt(itemName + ".SecretID"));
 			} else {
-				id = (byte) random.nextInt(256);
+				id = (short) random.nextInt(); //Make it another random value
 				
-				while (PKItem.INSTANCE_MAP.containsKey(id)) {
+				while (PKItem.INSTANCE_MAP.containsKey(id)) { //Easier to ++ then to make a new random num. And its faster
 					id++;
 				}
 			}
@@ -137,9 +144,16 @@ public class ConfigManager {
 			}
 			if (configitem.contains("Lore")) {
 				List<String> list = new ArrayList<String>();
-				for (String s : configitem.getStringList("Lore")) {
-					list.add(ChatColor.RESET + "" + ChatColor.GRAY + s);
+				
+				if (configitem.get("Lore") instanceof List) {
+					for (String s : configitem.getStringList("Lore")) {
+						list.add(ChatColor.RESET + "" + ChatColor.GRAY + s);
+					}
+				} else {
+					list.add(ChatColor.RESET + "" + ChatColor.GRAY + configitem.getString("Lore"));
 				}
+				
+				
 				item.setLore(list);
 			}
 			if (configitem.contains("Material")) {
@@ -160,7 +174,7 @@ public class ConfigManager {
 				}
 			}
 			if (configitem.contains("Durability")) {
-				item.setDurability((short) configitem.getInt("Durability"));
+				item.setMaxDurability((short) configitem.getInt("Durability"));
 			}
 			if (configitem.contains("Usage")) {
 				Usage usage = PKItem.Usage.getUsage(configitem.getString("Usage"));
@@ -214,7 +228,7 @@ public class ConfigManager {
 				
 				for (String key : attributeList.getKeys(false)) {
 					if (Attribute.isAttribute(key)) {
-						item.addAttribute(Attribute.valueOf(key), attributeList.getString(key));
+						item.addAttribute(Attribute.getAttribute(key), new AttributeModification(Attribute.getAttribute(key), attributeList.getString(key), item));
 					} else {
 						ProjectKorraItems.log.warning(languageConfig.get().getString("Item.Load.InvalidAttribute").replace("{attribute}", key).replace("{item}", itemName));
 					}
@@ -299,10 +313,10 @@ public class ConfigManager {
 					
 					ItemStack recipeItem = item.buildItem();
 					if (configitem.contains("ShapelessRecipe.Amount")) {
-						recipeItem.setAmount(configitem.getInt("ShapelessRecipe.Amount"));
+						recipeItem.setAmount(configitem.getInt("ShapelessRecipe.Amount", 1));
 					}
 					
-					ShapelessRecipe recipe = new ShapelessRecipe(recipeItem);
+					ShapelessRecipe recipe = new PKIShapelessRecipe(item, configitem.getInt("ShapelessRecipe.Amount", 1));
 					
 					for (String ingredient : ingredientsArray) {
 						MaterialData materialdata = null;
@@ -319,6 +333,8 @@ public class ConfigManager {
 					ProjectKorraItems.createError(languageConfig.get().getString("Item.Load.InvalidRecipe.Shapeless").replace("{item}", itemName));
 				}
 			}
+			
+			ProjectKorraItems.log.info(item.getName() + " registered with ID " + GenericUtil.convertSignedShort(item.getID()));
 		}
 	}
 

@@ -16,7 +16,12 @@ public class Requirements {
 	private Set<String> worlds = new HashSet<String>();
 	private Set<Element> elements = new HashSet<Element>();
 	
-	public boolean canUse(Player player) {
+	/**
+	 * Whether a player meets the requirements or not
+	 * @param player The player
+	 * @return
+	 */
+	public boolean meets(Player player) {
 		for (String perm : permissions) {
 			if (!player.hasPermission(perm)) {
 				return false;

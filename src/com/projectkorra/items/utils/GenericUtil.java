@@ -16,4 +16,17 @@ public class GenericUtil {
 		} catch (NumberFormatException e) {return false;}
 	}
 
+	/**
+	 * Convert an unsigned integer to a signed short
+	 */
+	public static short convertUnsignedShort(int id) {
+		return (short) (id - Short.MIN_VALUE);
+	}
+	
+	/**
+	 * Convert a signed short to an unsigned integer
+	 */
+	public static int convertSignedShort(short id) {
+		return (int) (id + Short.MAX_VALUE + 1);
+	}
 }

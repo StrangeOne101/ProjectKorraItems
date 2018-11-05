@@ -1,6 +1,7 @@
 package com.projectkorra.items.command;
 
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,8 +10,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.projectkorra.items.PKItem;
-import com.projectkorra.items.PKItemStack;
+import com.projectkorra.items.attribute.AttributeBuilder;
+import com.projectkorra.items.attribute.old.AttributeOld;
 import com.projectkorra.items.configuration.ConfigManager;
+import com.projectkorra.items.utils.GenericUtil;
 
 public class TestCommand extends PKICommand {
 
@@ -40,29 +43,29 @@ public class TestCommand extends PKICommand {
 				if (!PKItem.isPKItem(stack)) {
 					sender.sendMessage(ChatColor.BLUE + "isPKItem(item) = false");
 				} else {
-					sender.sendMessage(ChatColor.BLUE + "PKItem.findID(item) = " + (((int)PKItem.findID(stack.getItemMeta().getDisplayName())) + 128));
+					sender.sendMessage(ChatColor.BLUE + "PKItem.findID(item) = " + (GenericUtil.convertSignedShort(PKItem.findID(stack.getItemMeta().getDisplayName()))));
 				}
 			} else if (args.get(0).equalsIgnoreCase("getowner")) {
 				if (!PKItem.isPKItem(stack)) {
 					sender.sendMessage(ChatColor.BLUE + "isPKItem(item) = false");
-				} else if (!(stack instanceof PKItemStack)) {
-					sender.sendMessage(ChatColor.BLUE + "Not a PKItemStack???");
+				/*} else if (!(stack instanceof PKItemStack)) {
+					sender.sendMessage(ChatColor.BLUE + "Not a PKItemStack???");*/
 				} else {
-					sender.sendMessage(ChatColor.BLUE + "PKItemStack.getOwner() = " + ((PKItemStack)stack).getOwner() + " (" + Bukkit.getOfflinePlayer(((PKItemStack)stack).getOwner()).getName() + ")");
+					sender.sendMessage(ChatColor.BLUE + "PKItemStack.getOwner() = " + PKItem.getOwner(stack) + " (" + Bukkit.getOfflinePlayer(PKItem.getOwner(stack)).getName() + ")");
 				}
 			} else if (args.get(0).equalsIgnoreCase("getdurability")) {
 				if (!PKItem.isPKItem(stack)) {
 					sender.sendMessage(ChatColor.BLUE + "isPKItem(item) = false");
-				} else if (!(stack instanceof PKItemStack)) {
-					sender.sendMessage(ChatColor.BLUE + "Not a PKItemStack???");
+				/*} else if (!(stack instanceof PKItemStack)) {
+					sender.sendMessage(ChatColor.BLUE + "Not a PKItemStack???");*/
 				} else {
-					sender.sendMessage(ChatColor.BLUE + "PKItemStack.getPKIDurability() = " + ((PKItemStack)stack).getPKIDurability());
+					sender.sendMessage(ChatColor.BLUE + "PKItemStack.getPKIDurability() = " + PKItem.getDurability(stack));
 				}
 			} else if (args.get(0).equalsIgnoreCase("getitems")) {
 				for (PKItem item : PKItem.INSTANCE_MAP.values()) {
 					sender.sendMessage(ChatColor.BLUE + item.getName() + ": " + (((int)item.getID()) + 128));
 				}
-			}  else if (args.get(0).equalsIgnoreCase("getidhard")) {
+			} else if (args.get(0).equalsIgnoreCase("getidhard")) {
 				if (!stack.hasItemMeta()) sender.sendMessage(ChatColor.BLUE + "No item meta found!");
 				else if (stack.getItemMeta().getDisplayName() == null) sender.sendMessage(ChatColor.BLUE + "No displayname found!");
 				else if (!stack.getItemMeta().getDisplayName().contains("§k")) sender.sendMessage(ChatColor.BLUE + "No magic character found!");
@@ -71,11 +74,34 @@ public class TestCommand extends PKICommand {
 					if (refined.charAt(0) != '§' && refined.charAt(2) != '§') sender.sendMessage(ChatColor.BLUE + "Format invalid!");
 					else {
 						try {
-							Integer.valueOf("" + refined.charAt(1) + refined.charAt(3), 16);
+							int b = Integer.valueOf("" + refined.charAt(1) + refined.charAt(3) + refined.charAt(5) + refined.charAt(7) , 16) - 128;
 							sender.sendMessage(ChatColor.BLUE + "ID is fine!");
 						} catch (NumberFormatException e) {sender.sendMessage(ChatColor.BLUE + "Number format exception: " + refined.charAt(1) + refined.charAt(3));}
 					}
 				}
+			} else if (args.get(0).equalsIgnoreCase("register")) {
+				//AttributeOld.registerDefaultAttributes();
+				sender.sendMessage(ChatColor.BLUE + "Complete!");
+			} else if (args.get(0).equalsIgnoreCase("hexid")) {
+				short id = (short) new Random().nextInt(30000);
+				
+				if (args.size() > 1) {
+					id = Short.parseShort(args.get(1));
+				}
+				
+				String hexed = PKItem.hideID(id).replace('\u00A7', '&');
+				sender.sendMessage(ChatColor.BLUE + "ID " + id + " becomes '" + hexed + "'");
+			} else if (args.get(0).equalsIgnoreCase("unhexid")) {
+				sender.sendMessage(ChatColor.BLUE + "Unhexed ID is '" + PKItem.findID(args.get(1)) + "'");
+			} else if (args.get(0).equalsIgnoreCase("listattr")) {
+				sender.sendMessage("Found " + ChatColor.BLUE + AttributeBuilder.attributes.keySet().size() + " attributes overall");
+				int page = 1;
+				
+				if (args.size() > 1) page = Integer.parseInt(args.get(1));
+				
+				for (int i = (page - 1) * 10; i <= (page - 1) * 10 + 10 && i < AttributeBuilder.attributes.size(); i++) {
+					sender.sendMessage(ChatColor.BLUE + AttributeBuilder.attributes.keySet().toArray()[i].toString());
+				}				
 			}
 		}
 
