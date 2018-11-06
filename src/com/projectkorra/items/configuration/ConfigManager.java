@@ -65,7 +65,7 @@ public class ConfigManager {
 		
 		config.addDefault("Item.Load.Error", "Failed to load item {item}! Invalid {value}!");
 		config.addDefault("Item.Load.DuplicateID", "Items {item1} and {item2} both have an ID of {id}! ");
-		config.addDefault("Item.Load.SurpassMaxItems", "You have defined too many items as the max you can define is 256! Any items defined after this will no longer be usable in game.");
+		//config.addDefault("Item.Load.SurpassMaxItems", "You have defined too many items as the max you can define is 256! Any items defined after this will no longer be usable in game.");
 		config.addDefault("Item.Load.InvalidMaterial", "Failed to load the material of {item}! \"{material}\" is not a valid material!");
 		config.addDefault("Item.Load.InvalidUsage", "Failed to load the usage of {item}! \"{usage}\" is not one of HOLD, WEAR, CONSUMEABLE, CONTAIN");
 		config.addDefault("Item.Load.InvalidAttribute", "Attribute {attribute} on item {item} not found. Skipping...");
@@ -80,6 +80,10 @@ public class ConfigManager {
 		config.addDefault("Item.Use.Anvil", "You can't place this item in an anvil!");
 		config.addDefault("Item.Use.Enchant", "You can't enchant this item in an enchantment table!");
 		config.addDefault("Item.Use.Place", "You can't place this item!");
+		config.addDefault("Item.Use.Deny.Permission", "You don't have permission to use this item!");
+		config.addDefault("Item.Use.Deny.World", "You can't use this item in the current world!");
+		config.addDefault("Item.Use.Deny.Element", "You must have {element} to use this item!");
+		config.addDefault("Item.Use.Deny.None", "You meet the requirements to use this item!");
 		
 		config.addDefault("Item.Give.ItemNotFound", "Item {item} not found!");
 		config.addDefault("Item.Give.Disabled", "This item is disabled right now!");

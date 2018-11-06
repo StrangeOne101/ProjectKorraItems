@@ -35,7 +35,7 @@ public class PKItem {
 	protected short ID;
 	protected Usage usage;
 	protected boolean glow = false;
-	protected Requirements req;
+	protected Requirements req = new Requirements();
 	protected boolean playedLocked = false;
 	protected boolean ignoreBreakMessage = false;
 	protected Map<Attribute, AttributeModification> attributes = new HashMap<Attribute, AttributeModification>();
@@ -176,14 +176,14 @@ public class PKItem {
 	/**
 	 * <b>USE {@link PKItemStack.canUse} instead!</b>
 	 */
-	@Deprecated
+	/*@Deprecated
 	public boolean canUse(Player player) {
 		if (!this.req.meets(player)) {
 			return false;
 		}
 		
 		return true;
-	}
+	}*/
 	
 	
 	/**
@@ -390,6 +390,10 @@ public class PKItem {
 	
 	public MaterialData getMaterial() {
 		return material;
+	}
+
+	public Requirements getRequirements() {
+		return req;
 	}
 	
 	public boolean isPlayedLocked() {

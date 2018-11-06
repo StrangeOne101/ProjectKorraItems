@@ -323,7 +323,7 @@ public class ItemUtils {
 			if (stack == null) continue;
 			if (PKItem.isPKItem(stack) && PKItem.isValidItem(stack)) { //If it isn't a valid PKItem that can be used, don't use it.
 				PKItem item = PKItem.getPKItem(stack);
-				if (item.getUsage() == Usage.WEARABLE && !usedItems.contains(item)) {
+				if (item.getUsage() == Usage.WEARABLE && !usedItems.contains(item) && item.getRequirements().meets(player)) { //If not used & a player can use it
 					for (AttributeModification attr : item.getAttributes().values()) {
 						data.put(attr, stack);
 					}
@@ -337,7 +337,7 @@ public class ItemUtils {
 			if (stack == null) continue;
 			if (PKItem.isPKItem(stack) && PKItem.isValidItem(stack)) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
 				PKItem item = PKItem.getPKItem(stack);
-				if (item.getUsage() == Usage.PRESENT && !usedItems.contains(item)) {
+				if (item.getUsage() == Usage.PRESENT && !usedItems.contains(item) && item.getRequirements().meets(player)) {
 					for (AttributeModification attr : item.getAttributes().values()) {
 						data.put(attr, stack);
 					}
@@ -350,7 +350,7 @@ public class ItemUtils {
 			if (stack == null) continue;
 			if (PKItem.isPKItem(stack) && PKItem.isValidItem(stack)) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
 				PKItem item = PKItem.getPKItem(stack);
-				if (item.getUsage() == Usage.HOLD && !usedItems.contains(item)) {
+				if (item.getUsage() == Usage.HOLD && !usedItems.contains(item) && item.getRequirements().meets(player)) {
 					player.sendMessage("Debug001");
 					for (AttributeModification attr : item.getAttributes().values()) {
 						data.put(attr, stack);

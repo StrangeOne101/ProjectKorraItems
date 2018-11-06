@@ -105,4 +105,12 @@ public class AttributeModification {
 	public PKItem getItemSource() {
 		return source;
 	}
+	
+	public AttributeModifier getModifier() {
+		return modifier;
+	}
+	
+	public double getValue() {
+		return value;
+	}
 }

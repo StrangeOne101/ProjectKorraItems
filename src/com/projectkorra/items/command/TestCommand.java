@@ -1,6 +1,7 @@
 package com.projectkorra.items.command;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -11,9 +12,10 @@ import org.bukkit.inventory.ItemStack;
 
 import com.projectkorra.items.PKItem;
 import com.projectkorra.items.attribute.AttributeBuilder;
-import com.projectkorra.items.attribute.old.AttributeOld;
+import com.projectkorra.items.attribute.AttributeModification;
 import com.projectkorra.items.configuration.ConfigManager;
 import com.projectkorra.items.utils.GenericUtil;
+import com.projectkorra.items.utils.ItemUtils;
 
 public class TestCommand extends PKICommand {
 
@@ -75,7 +77,7 @@ public class TestCommand extends PKICommand {
 					else {
 						try {
 							int b = Integer.valueOf("" + refined.charAt(1) + refined.charAt(3) + refined.charAt(5) + refined.charAt(7) , 16) - 128;
-							sender.sendMessage(ChatColor.BLUE + "ID is fine!");
+							sender.sendMessage(ChatColor.BLUE + "ID is fine! (" + b + ")");
 						} catch (NumberFormatException e) {sender.sendMessage(ChatColor.BLUE + "Number format exception: " + refined.charAt(1) + refined.charAt(3));}
 					}
 				}
@@ -102,6 +104,28 @@ public class TestCommand extends PKICommand {
 				for (int i = (page - 1) * 10; i <= (page - 1) * 10 + 10 && i < AttributeBuilder.attributes.size(); i++) {
 					sender.sendMessage(ChatColor.BLUE + AttributeBuilder.attributes.keySet().toArray()[i].toString());
 				}				
+			} else if (args.get(0).equalsIgnoreCase("testitem")) {
+				if (!PKItem.isPKItem(stack)) {
+					sender.sendMessage(ChatColor.BLUE + "isPKItem(item) = false");
+					return;
+				}
+				
+				PKItem item = PKItem.getPKItem(stack);
+				
+				sender.sendMessage(ChatColor.BLUE + "ID: " + item.getName());
+				sender.sendMessage(ChatColor.BLUE + "Secret ID: " + GenericUtil.convertSignedShort(item.getID()));
+				sender.sendMessage(ChatColor.BLUE + "Max Durability: " + item.getMaxDurability());
+				sender.sendMessage(ChatColor.BLUE + "Requirements: " + item.getRequirements().toString());
+				sender.sendMessage(ChatColor.BLUE + "Usage: " + item.getUsage());
+				sender.sendMessage(ChatColor.BLUE + "Player locked: " + item.isPlayedLocked());
+			} else if (args.get(0).equalsIgnoreCase("active")) {
+				Map<AttributeModification, ItemStack> items = ItemUtils.getAttributesActive(player);
+				for (AttributeModification mod : items.keySet()) {
+					ItemStack stack_ = items.get(mod);
+					PKItem item = PKItem.getPKItem(stack_);
+					
+					sender.sendMessage(ChatColor.BLUE + item.getName() + " (" + item.getUsage() + ") - " + mod.getAttribute().getAttributeName() + ": " + mod.getModifier() + " " + mod.getValue());
+				}
 			}
 		}
 
