@@ -31,7 +31,7 @@ public class Requirements {
 		}
 		boolean isInWorld = worlds.size() == 0;
 		for (String world : worlds) {
-			if (!player.getLocation().getWorld().getName().equalsIgnoreCase(world)) {
+			if (player.getLocation().getWorld().getName().equalsIgnoreCase(world)) {
 				isInWorld = true;
 				break;
 			}
@@ -68,7 +68,7 @@ public class Requirements {
 		
 		boolean isInWorld = worlds.size() == 0;
 		for (String world : worlds) {
-			if (!player.getLocation().getWorld().getName().equalsIgnoreCase(world)) {
+			if (player.getLocation().getWorld().getName().equalsIgnoreCase(world)) {
 				isInWorld = true;
 				break;
 			}

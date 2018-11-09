@@ -1,7 +1,6 @@
 package com.projectkorra.items.ARCHIVE;
 
 import com.projectkorra.items.ProjectKorraItems;
-import com.projectkorra.items.customs.EnchantGlow;
 import com.projectkorra.items.customs.RecipeIngredient;
 
 import org.bukkit.ChatColor;

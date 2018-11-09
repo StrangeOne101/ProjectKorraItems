@@ -44,8 +44,8 @@ public class ProjectKorraItems extends JavaPlugin {
 		new BukkitRunnable() { //Register once the server is finished setting up. Runnables will do this.
 			@Override
 			public void run() {
-				AttributeBuilder.setupPrefixes();
-				AttributeBuilder.setupSuffixes();
+				//AttributeBuilder.setupPrefixes();
+				//AttributeBuilder.setupSuffixes();
 				AttributeBuilder.setupAttributes();
 				
 				new ConfigManager(); //Load config after attributes are loaded

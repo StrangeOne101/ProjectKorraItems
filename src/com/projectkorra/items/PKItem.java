@@ -9,16 +9,18 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
+import com.projectkorra.items.ARCHIVE.EnchantGlow;
 import com.projectkorra.items.attribute.Attribute;
 import com.projectkorra.items.attribute.AttributeModification;
 import com.projectkorra.items.attribute.Requirements;
 import com.projectkorra.items.configuration.ConfigManager;
-import com.projectkorra.items.customs.EnchantGlow;
 import com.projectkorra.items.utils.GenericUtil;
 import com.projectkorra.items.utils.NBTReflectionUtil;
 
@@ -115,7 +117,8 @@ public class PKItem {
 		ItemMeta meta = stack.getItemMeta();
 		
 		if (this.glow) {
-			meta.addEnchant(EnchantGlow.getGlow(), 0, false);
+			meta.addEnchant(Enchantment.LUCK, 1, false);
+	        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		}
 		
 		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', this.displayName) + hideID(this.ID));
@@ -208,7 +211,7 @@ public class PKItem {
 	 * */
 	public static short findID(String name) {
 		String refined = name.split("§k§k")[name.split("§k§k").length - 1]; //Everything post last "§k"
-		int b = Integer.valueOf("" + refined.charAt(1) + refined.charAt(3) + refined.charAt(5) + refined.charAt(7) , 16) - 128;
+		int b = Integer.valueOf("" + refined.charAt(1) + refined.charAt(3) + refined.charAt(5) + refined.charAt(7) , 16);
 		return GenericUtil.convertUnsignedShort(b);
 	}
 	
@@ -518,9 +521,7 @@ public class PKItem {
 		ItemMeta meta = stack.getItemMeta();
 		meta.setDisplayName(ChatColor.RESET + "" + ChatColor.MAGIC + "l|l" + ChatColor.RESET + ChatColor.GRAY + " Unknown Item " + ChatColor.WHITE + ChatColor.MAGIC + "l|l" + PKItem.hideID(previousID));
 		List<String> lore = new ArrayList<String>();
-		lore.add(ChatColor.DARK_GRAY + "Your ProjectKorra Item is unknown! Contact your");
-		lore.add(ChatColor.DARK_GRAY + "admin about this! Keep this item somewhere safe");
-		lore.add(ChatColor.DARK_GRAY + "in case it is restored in future.");
+		lore.addAll(GenericUtil.splitString(ChatColor.translateAlternateColorCodes('&', ConfigManager.languageConfig.get().getString("Item.Broken.Lore")), 50));
 		if (showID) lore.add(ChatColor.RED + "Secret ID: " + GenericUtil.convertSignedShort(previousID));
 		meta.setLore(lore);
 		stack.setItemMeta(meta);

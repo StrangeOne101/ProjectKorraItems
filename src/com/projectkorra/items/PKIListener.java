@@ -118,7 +118,8 @@ public class PKIListener implements Listener
 		
 		for (AttributeModification attrdata : attributes.keySet()) { //Sorted from high to low priority
 			if (attrdata.getAttribute().getEvent() == AttributeEvent.ABILITY_START) {
-				event.getAbility().getPlayer().sendMessage("Debug101");
+				//event.getAbility().getPlayer().sendMessage("Debug101");
+				//event.getAbility().getPlayer().sendMessage(event.getAbility().getName());
 				if (attrdata.performModification((CoreAbility) event.getAbility())) { //Modify the ability from the attribute
 					event.getAbility().getPlayer().sendMessage("Debug102");
 					if (!itemsToDamage.contains(attributes.get(attrdata))) {
@@ -137,7 +138,7 @@ public class PKIListener implements Listener
 	}
 	
 	public static void updateItems(Inventory inv, Player player) {
-		for (int i = 0; i < inv.getContents().length; i++) {
+		for (int i = 0; i < inv.getStorageContents().length; i++) {
 			ItemStack stack = inv.getContents()[i];
 			if (stack == null) continue;
 			//If it is a PKItem that hasn't been updated since server start
@@ -145,7 +146,7 @@ public class PKIListener implements Listener
 				
 				short id = PKItem.findID(stack.getItemMeta().getDisplayName());
 				if (!PKItem.isValidID(id)) {
-					inv.getContents()[i] = PKItem.getDudItem(id, player.hasPermission("bendingitems.admin"));
+					inv.setItem(i, PKItem.getDudItem(id, player.hasPermission("bendingitems.admin")));
 					player.sendMessage(ChatColor.BLUE + "Found dud item with ID: " + GenericUtil.convertSignedShort(id));
 				}
 				
@@ -160,7 +161,9 @@ public class PKIListener implements Listener
 		
 		if (event.getRecipe() instanceof PKIRecipe) {
 			PKItem pkitem = ((PKIRecipe)event.getRecipe()).getItem();
-			PKItem.setOwner(event.getCurrentItem(), event.getWhoClicked().getUniqueId());
+			ItemStack stack = event.getCurrentItem().clone();
+			PKItem.setOwner(stack, event.getWhoClicked().getUniqueId()); //Set the owner
+			event.setCurrentItem(stack); //Update the item crafted
 		}
 	}
 	

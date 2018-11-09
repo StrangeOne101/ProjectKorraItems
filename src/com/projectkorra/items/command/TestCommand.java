@@ -94,7 +94,7 @@ public class TestCommand extends PKICommand {
 				String hexed = PKItem.hideID(id).replace('\u00A7', '&');
 				sender.sendMessage(ChatColor.BLUE + "ID " + id + " becomes '" + hexed + "'");
 			} else if (args.get(0).equalsIgnoreCase("unhexid")) {
-				sender.sendMessage(ChatColor.BLUE + "Unhexed ID is '" + PKItem.findID(args.get(1)) + "'");
+				sender.sendMessage(ChatColor.BLUE + "Unhexed ID is '" + PKItem.findID(args.get(1).replace('&', '\u00A7')) + "'");
 			} else if (args.get(0).equalsIgnoreCase("listattr")) {
 				sender.sendMessage("Found " + ChatColor.BLUE + AttributeBuilder.attributes.keySet().size() + " attributes overall");
 				int page = 1;
@@ -112,12 +112,18 @@ public class TestCommand extends PKICommand {
 				
 				PKItem item = PKItem.getPKItem(stack);
 				
+				if (item == null) {
+					sender.sendMessage(ChatColor.BLUE + "PKItem is null");
+					return;
+				}
+				
 				sender.sendMessage(ChatColor.BLUE + "ID: " + item.getName());
 				sender.sendMessage(ChatColor.BLUE + "Secret ID: " + GenericUtil.convertSignedShort(item.getID()));
 				sender.sendMessage(ChatColor.BLUE + "Max Durability: " + item.getMaxDurability());
 				sender.sendMessage(ChatColor.BLUE + "Requirements: " + item.getRequirements().toString());
 				sender.sendMessage(ChatColor.BLUE + "Usage: " + item.getUsage());
 				sender.sendMessage(ChatColor.BLUE + "Player locked: " + item.isPlayedLocked());
+				sender.sendMessage(ChatColor.BLUE + "Attributes: " + item.getAttributes().size());
 			} else if (args.get(0).equalsIgnoreCase("active")) {
 				Map<AttributeModification, ItemStack> items = ItemUtils.getAttributesActive(player);
 				for (AttributeModification mod : items.keySet()) {

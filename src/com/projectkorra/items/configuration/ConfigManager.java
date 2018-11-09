@@ -7,6 +7,7 @@ import com.projectkorra.items.attribute.Attribute;
 import com.projectkorra.items.attribute.AttributeModification;
 import com.projectkorra.items.attribute.Requirements;
 import com.projectkorra.items.attribute.old.AttributeOld;
+import com.projectkorra.items.recipe.PKIShapedRecipe;
 import com.projectkorra.items.recipe.PKIShapelessRecipe;
 import com.projectkorra.items.utils.GenericUtil;
 import com.projectkorra.projectkorra.Element;
@@ -75,6 +76,10 @@ public class ConfigManager {
 		config.addDefault("Item.Load.InvalidRecipe.ShapelessRecipeError", "Failed to load the recipe of {item}! Could not parse the ingredients line!");
 		config.addDefault("Item.Load.InvalidRecipe.InvalidMaterial", "Failed to load the recipe of {item}! \"{material}\" is not a valid material!");
 		
+		config.addDefault("Item.Broken.Name", "&kl|l &r&7Unknown Item &r&ll|l");
+		config.addDefault("Item.Broken.Lore", "&8Your ProjectKorra Item is unknown! Contact your admin about this! Keep this item somewhere safe in case it is restored in future.");
+		config.addDefault("Item.Broken.SecretID", "&cSecret ID: {id}");
+		
 		config.addDefault("Item.Use.DuplicateID", "This item cannot be used because it has a duplicate ID! Please report this to your admin!");
 		config.addDefault("Item.Use.Break", "Your {item} has broken!");
 		config.addDefault("Item.Use.Anvil", "You can't place this item in an anvil!");
@@ -98,7 +103,7 @@ public class ConfigManager {
 		config.addDefault("Item.Command.Reload", "ProjectKorra Items reloaded!");
 		
 		
-		config.addDefault("Item.Lore.Durability", "Durability: ({durability}/{maxdurability})!");
+		config.addDefault("Item.Lore.Durability", "Durability: ({durability}/{maxdurability})");
 		config.addDefault("Item.Lore.Usage.Consumable", "Right click while holding to use!");
 		config.addDefault("Item.Lore.Usage.Wearable", "Must be worn for the effects to show!");
 		config.addDefault("Item.Lore.Usage.Hold", "Active while holding!");
@@ -284,12 +289,7 @@ public class ConfigManager {
 						}
 					}
 					
-					ItemStack recipeItem = item.buildItem();
-					if (configitem.contains("ShapedRecipe.Amount")) {
-						recipeItem.setAmount(configitem.getInt("ShapedRecipe.Amount"));
-					}
-					
-					ShapedRecipe finalrecipe = new ShapedRecipe(recipeItem);
+					ShapedRecipe finalrecipe = new PKIShapedRecipe(item, configitem.getInt("ShapedRecipe.Amount", 1));
 					
 					String[] recipeArray = new String[recipe.size()];
 					for (int i = 0; i < recipe.size(); i++) recipeArray[i] = recipe.get(i);
@@ -314,11 +314,6 @@ public class ConfigManager {
 					else if (ingredients.contains(",")) ingredientsArray = ingredients.split(",");
 					else if (ingredients.contains(" ")) ingredientsArray = ingredients.split(" ");
 					else ProjectKorraItems.createError(languageConfig.get().getString("Item.Load.InvalidRecipe.ShapelessRecipeError").replace("{item}", itemName));
-					
-					ItemStack recipeItem = item.buildItem();
-					if (configitem.contains("ShapelessRecipe.Amount")) {
-						recipeItem.setAmount(configitem.getInt("ShapelessRecipe.Amount", 1));
-					}
 					
 					ShapelessRecipe recipe = new PKIShapelessRecipe(item, configitem.getInt("ShapelessRecipe.Amount", 1));
 					

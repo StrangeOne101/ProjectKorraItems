@@ -351,7 +351,7 @@ public class ItemUtils {
 			if (PKItem.isPKItem(stack) && PKItem.isValidItem(stack)) { //If it isn't a PKItemStack, it's not a updated item. Only use updated items.
 				PKItem item = PKItem.getPKItem(stack);
 				if (item.getUsage() == Usage.HOLD && !usedItems.contains(item) && item.getRequirements().meets(player)) {
-					player.sendMessage("Debug001");
+					//player.sendMessage("Debug001");
 					for (AttributeModification attr : item.getAttributes().values()) {
 						data.put(attr, stack);
 					}

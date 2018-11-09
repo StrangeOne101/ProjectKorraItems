@@ -1,11 +1,9 @@
 package com.projectkorra.items.attribute;
 
-import com.projectkorra.projectkorra.ability.CoreAbility;
-
 public class AttributeSuffix {
 	
-	public String name;
-	public String actualAttributeName;
+	private String name;
+	private String actualAttributeName;
 	
 	public AttributeSuffix(String name, String actualAttributeName) {
 		this.name = name;
@@ -34,4 +32,11 @@ public class AttributeSuffix {
 		return true;
 	}
 
+	void setActualAttributeName(String name) {
+		this.actualAttributeName = name;
+	}
+	
+	void setName(String name) {
+		this.name = name;
+	}
 }
