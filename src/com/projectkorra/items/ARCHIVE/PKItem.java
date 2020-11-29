@@ -145,7 +145,7 @@ public class PKItem {
 				// Try to get the Material by id
 				if (mat == null) {
 					try {
-						mat = Material.getMaterial(Integer.parseInt(colons[0]));
+						//mat = Material.getMaterial(Integer.parseInt(colons[0]));
 					}
 					catch (NumberFormatException e) {
 					}
@@ -230,8 +230,8 @@ public class PKItem {
 
 		meta.setLore(tempLore);
 		istack.setItemMeta(meta);
-		if (glow)
-			EnchantGlow.addGlow(istack);
+		//if (glow)
+			//EnchantGlow.addGlow(istack);
 
 		return istack;
 	}

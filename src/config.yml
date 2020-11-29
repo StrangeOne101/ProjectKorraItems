@@ -1,0 +1,8 @@
+# Durability indicator
+Durability:
+  # Type can either be GRADIENT, NUMBER or COMBO. GRADIENT means that a bar of characters is disabled in the lore showing the amount left.
+  # Number is just a plain number, and COMBO has the gradient but also has the percentage left in the middle
+  Type: GRADIENT
+  GradientCharacter: '|'
+  GradientAmount: 20
+

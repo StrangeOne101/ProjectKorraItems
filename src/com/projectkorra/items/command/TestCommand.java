@@ -1,9 +1,16 @@
 package com.projectkorra.items.command;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.projectkorra.items.ProjectKorraItems;
+import com.projectkorra.items.attribute.Attribute;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -65,18 +72,18 @@ public class TestCommand extends PKICommand {
 				}
 			} else if (args.get(0).equalsIgnoreCase("getitems")) {
 				for (PKItem item : PKItem.INSTANCE_MAP.values()) {
-					sender.sendMessage(ChatColor.BLUE + item.getName() + ": " + (((int)item.getID()) + 128));
+					sender.sendMessage(ChatColor.BLUE + item.getName() + ": " + (GenericUtil.convertSignedShort(item.getID())));
 				}
 			} else if (args.get(0).equalsIgnoreCase("getidhard")) {
 				if (!stack.hasItemMeta()) sender.sendMessage(ChatColor.BLUE + "No item meta found!");
 				else if (stack.getItemMeta().getDisplayName() == null) sender.sendMessage(ChatColor.BLUE + "No displayname found!");
-				else if (!stack.getItemMeta().getDisplayName().contains("§k")) sender.sendMessage(ChatColor.BLUE + "No magic character found!");
+				else if (!stack.getItemMeta().getDisplayName().contains("\u00A7k")) sender.sendMessage(ChatColor.BLUE + "No magic character found!");
 				else {
-					String refined = stack.getItemMeta().getDisplayName().split("§k")[stack.getItemMeta().getDisplayName().split("§k").length - 1];
-					if (refined.charAt(0) != '§' && refined.charAt(2) != '§') sender.sendMessage(ChatColor.BLUE + "Format invalid!");
+					String refined = stack.getItemMeta().getDisplayName().split("\u00A7k")[stack.getItemMeta().getDisplayName().split("\u00A7k").length - 1];
+					if (refined.charAt(0) != '\u00A7' && refined.charAt(2) != '\u00A7') sender.sendMessage(ChatColor.BLUE + "Format invalid!");
 					else {
 						try {
-							int b = Integer.valueOf("" + refined.charAt(1) + refined.charAt(3) + refined.charAt(5) + refined.charAt(7) , 16) - 128;
+							int b = Integer.valueOf("" + refined.charAt(1) + refined.charAt(3) + refined.charAt(5) + refined.charAt(7) , 16);
 							sender.sendMessage(ChatColor.BLUE + "ID is fine! (" + b + ")");
 						} catch (NumberFormatException e) {sender.sendMessage(ChatColor.BLUE + "Number format exception: " + refined.charAt(1) + refined.charAt(3));}
 					}
@@ -132,6 +139,21 @@ public class TestCommand extends PKICommand {
 					
 					sender.sendMessage(ChatColor.BLUE + item.getName() + " (" + item.getUsage() + ") - " + mod.getAttribute().getAttributeName() + ": " + mod.getModifier() + " " + mod.getValue());
 				}
+			} else if (args.get(0).equalsIgnoreCase("dump")) {
+				List<String> lines = new ArrayList<>();
+				for (String attrS : AttributeBuilder.attributes.keySet()) {
+					Attribute attr = Attribute.getAttribute(attrS);
+					lines.add(attr.getAttributeName() + " - " + attr.getPrefix().getPrefix());
+				}
+
+				try {
+					Files.write(new File(ProjectKorraItems.plugin.getDataFolder(), "attributes.debug").toPath(), lines, StandardCharsets.UTF_8);
+					sender.sendMessage(ChatColor.BLUE + "Dumped all attributes");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+
 			}
 		}
 

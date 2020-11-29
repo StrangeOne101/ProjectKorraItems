@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.projectkorra.items.event.PKItemDamageEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -121,10 +123,10 @@ public class PKIListener implements Listener
 				//event.getAbility().getPlayer().sendMessage("Debug101");
 				//event.getAbility().getPlayer().sendMessage(event.getAbility().getName());
 				if (attrdata.performModification((CoreAbility) event.getAbility())) { //Modify the ability from the attribute
-					event.getAbility().getPlayer().sendMessage("Debug102");
+					//event.getAbility().getPlayer().sendMessage("Debug102");
 					if (!itemsToDamage.contains(attributes.get(attrdata))) {
 						itemsToDamage.add(attributes.get(attrdata));
-						event.getAbility().getPlayer().sendMessage("Debug103");
+						//event.getAbility().getPlayer().sendMessage("Debug103");
 					}
 				}
 			}
@@ -132,8 +134,12 @@ public class PKIListener implements Listener
 		
 		for (ItemStack stack : itemsToDamage) {
 			PKItem item = PKItem.getPKItem(stack);
-			item.damageItem(event.getAbility().getPlayer(), stack);
-			event.getAbility().getPlayer().sendMessage("Debug104");
+			PKItemDamageEvent damageevent = new PKItemDamageEvent(item, stack, event.getAbility().getPlayer());
+			Bukkit.getServer().getPluginManager().callEvent(damageevent);
+			if (!damageevent.isCancelled()) {
+				item.damageItem(event.getAbility().getPlayer(), stack);
+			}
+			//event.getAbility().getPlayer().sendMessage("Debug104");
 		}
 	}
 	

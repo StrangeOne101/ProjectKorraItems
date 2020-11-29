@@ -5,12 +5,11 @@ ExampleStick:
     Glow: true
 ExampleWool:
     Name: "&4Fire Wool"
-    Material: WOOL:14
+    Material: RED_WOOL
     Lore: 
     - &cThis wool belongs to the Fire Nation
     - &cUse with care!
     Glow: true
-    UnshapedRecipe: WOOL, WOOL:3:14, WOOL, example1:3
 ExampleBoots:
     Name: "&2Earth &aWalkers"
     Material: GOLD_BOOTS
@@ -27,7 +26,11 @@ ExampleRod:
     Name: "&4&lBLAZE ROD"
     Material: BLAZE_ROD
     Durability: 20
-    UnshapedRecipe: BLAZE_ROD:3, BLAZE_POWDER:3
+    UnshapedRecipe:
+      Ingredients:
+        - BLAZE_ROD
+        - BLAZE_POWDER
+      Amount: 1
     Stats:
         BlazeRange: +30%
     Require:

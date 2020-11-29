@@ -14,4 +14,8 @@ public abstract class PKItemEvent extends PKIEvent {
 		this.item = item;
 	}
 
+	public PKItemEvent(PKItem item) {
+		this.item = item;
+	}
+
 }

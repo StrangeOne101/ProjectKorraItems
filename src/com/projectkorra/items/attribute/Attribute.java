@@ -1,5 +1,7 @@
 package com.projectkorra.items.attribute;
 
+import com.projectkorra.projectkorra.ability.CoreAbility;
+
 public class Attribute {
 	
 	public enum AttributeEvent {
@@ -42,5 +44,14 @@ public class Attribute {
 	
 	public AttributeEvent getEvent() {
 		return event;
+	}
+
+	/**
+	 * Whether the attribute will affect the provided ability
+	 * @param ability The ability
+	 * @return
+	 */
+	public boolean affects(CoreAbility ability) {
+		return prefix.affects(ability);
 	}
 }

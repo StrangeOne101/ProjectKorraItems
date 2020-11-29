@@ -16,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
-import com.projectkorra.items.ARCHIVE.EnchantGlow;
 import com.projectkorra.items.attribute.Attribute;
 import com.projectkorra.items.attribute.AttributeModification;
 import com.projectkorra.items.attribute.Requirements;
@@ -72,7 +71,11 @@ public class PKItem {
 	 */
 	@SuppressWarnings("deprecation")
 	public ItemStack buildItem() {
-		return updateStack(new ItemStack(this.material.getItemType(), 1, this.material.getData()));
+		ItemStack stack = updateStack(new ItemStack(this.material.getItemType(), 1, this.material.getData()));
+		if (getMaxDurability() > -1) {
+			stack = setDurability(stack, getMaxDurability());
+		}
+		return stack;
 	}
 	
 	/**
@@ -83,7 +86,11 @@ public class PKItem {
 	 */
 	@SuppressWarnings("deprecation")
 	public ItemStack buildItem(int amount) {
-		return updateStack(new ItemStack(this.material.getItemType(), amount, this.material.getData()));
+		ItemStack stack = updateStack(new ItemStack(this.material.getItemType(), amount, this.material.getData()));
+		if (getMaxDurability() > -1) {
+			stack = setDurability(stack, getMaxDurability());
+		}
+		return stack;
 	}
 	
 	/**
@@ -94,7 +101,7 @@ public class PKItem {
 	 */
 	public ItemStack buildItem(Player player) {
 		ItemStack stack = buildItem();
-		setOwner(stack, player.getUniqueId());
+		stack = setOwner(stack, player.getUniqueId());
 		return stack;
 	}
 	
@@ -198,7 +205,7 @@ public class PKItem {
 	public static String hideID(short id) {
 		String hex = String.format("%02X ", GenericUtil.convertSignedShort(id)).trim();
 		while (hex.length() < 4) hex = "0" + hex;
-		return "§k§k§" + hex.charAt(0) + "§" + hex.charAt(1) + "§" + hex.charAt(2) + "§" + hex.charAt(3);
+		return "\u00A7k\u00A7k\u00A7" + hex.charAt(0) + "\u00A7" + hex.charAt(1) + "\u00A7" + hex.charAt(2) + "\u00A7" + hex.charAt(3);
 	}
 	
 	
@@ -210,7 +217,7 @@ public class PKItem {
 	 * @throws NumberFormatException if there is no ID found.
 	 * */
 	public static short findID(String name) {
-		String refined = name.split("§k§k")[name.split("§k§k").length - 1]; //Everything post last "§k"
+		String refined = name.split("\u00A7k\u00A7k")[name.split("\u00A7k\u00A7k").length - 1]; //Everything post last "Â§k"
 		int b = Integer.valueOf("" + refined.charAt(1) + refined.charAt(3) + refined.charAt(5) + refined.charAt(7) , 16);
 		return GenericUtil.convertUnsignedShort(b);
 	}
@@ -239,12 +246,10 @@ public class PKItem {
 	public static boolean isPKItem(ItemStack itemstack) {
 		if (!itemstack.hasItemMeta()) return false;
 		String name = itemstack.getItemMeta().getDisplayName();
-		if (name == null || name.split("§k").length == 1) return false;
-		
-		String refined = name.split("§k")[name.split("§k").length - 1];
-		if (refined.charAt(0) != '§' && refined.charAt(2) != '§') return false;
+		if (name == null || !name.matches(".*\u00A7k\u00A7k\u00A7[0-9a-fA-F]\u00A7[0-9a-fA-F]\u00A7[0-9a-fA-F]\u00A7[0-9a-fA-F]")) return false;
+
 		try {
-			return Integer.valueOf("" + refined.charAt(1) + refined.charAt(3) + refined.charAt(5) + refined.charAt(7), 16) < Short.MAX_VALUE * 2 + 1;
+			return PKItem.INSTANCE_MAP.containsKey(findID(name));
 		} catch (NumberFormatException | IndexOutOfBoundsException e) { return false; }
 	}
 	
@@ -294,19 +299,22 @@ public class PKItem {
 	 * @param stack The ItemStack being damaged
 	 * @param amount The amount to damage it by
 	 * */
-	public void damageItem(Player player, ItemStack stack, int amount) {
+	public ItemStack damageItem(Player player, ItemStack stack, int amount) {
 		if (getDurability(stack) > -1) { //Items with no durability (-1) don't get checked.
-			setDurability(stack, (short) (getDurability(stack) - amount)); //Setting it the long way so we update the NBT too.
+			stack = setDurability(stack, (short) (getDurability(stack) - amount)); //Setting it the long way so we update the NBT too.
 			
 			if (getDurability(stack) <= 0) {
 				stack.setType(Material.AIR); //Setting it to air will remove the itemstack from the inventory. Saves us having to worry about that stuff.
-				if (!ignoreBreakMessage) {
+
+				if (!ignoreBreakMessage && player != null) {
 					player.sendMessage(ChatColor.RED + ConfigManager.languageConfig.get().getString("Items.Use.Break").replace("{item}", getDisplayName()));
 				}
+				return stack;
 			} else {
-				this.updateStack(stack); //Updates the durability on the lore.
+				return this.updateStack(stack); //Updates the durability on the lore.
 			}
 		}
+		return stack;
 	}
 	
 	/**
@@ -315,8 +323,8 @@ public class PKItem {
 	 * @param player The player damaging the item
 	 * @param stack The ItemStack being damaged
 	 */
-	public void damageItem(Player player, ItemStack stack) {
-		this.damageItem(player, stack, 1);
+	public ItemStack damageItem(Player player, ItemStack stack) {
+		return this.damageItem(player, stack, 1);
 	}
 	
 	public void addAttribute(Attribute attribute, AttributeModification value) {
@@ -479,8 +487,8 @@ public class PKItem {
 	 * @param stack The ItemStack we are changing
 	 * @param owner The UUID of the owner
 	 */
-	public static void setOwner(ItemStack stack, UUID owner) {
-		NBTReflectionUtil.setString(stack, "PKI_Owner", owner.toString());
+	public static ItemStack setOwner(ItemStack stack, UUID owner) {
+		return NBTReflectionUtil.setString(stack, "PKI_Owner", owner.toString());
 	}
 	
 	/**
@@ -489,8 +497,8 @@ public class PKItem {
 	 * @param stack The ItemStack we are changing
 	 * @param durability The durability of the item
 	 */
-	public static void setDurability(ItemStack stack, short durability) {
-		NBTReflectionUtil.setInt(stack, "PKI_Durability", (int) durability);
+	public static ItemStack setDurability(ItemStack stack, short durability) {
+		return NBTReflectionUtil.setInt(stack, "PKI_Durability", (int) durability);
 	}
 	
 	/**
@@ -499,8 +507,8 @@ public class PKItem {
 	 * @param stack The ItemStack we are changing
 	 * @param hashcode The hashcode of the item
 	 */
-	public static void setHashcode(ItemStack stack, int hashcode) {
-		NBTReflectionUtil.setInt(stack, "PKI_Hashcode", hashcode);
+	public static ItemStack setHashcode(ItemStack stack, int hashcode) {
+		return NBTReflectionUtil.setInt(stack, "PKI_Hashcode", hashcode);
 	}
 	
 	/**
@@ -540,8 +548,7 @@ public class PKItem {
 	
 	/**
 	 * Returns whether or the item can be used
-	 * 
-	 * @param id The ID
+	 *
 	 * @return
 	 */
 	public static boolean isValidItem(ItemStack stack) {

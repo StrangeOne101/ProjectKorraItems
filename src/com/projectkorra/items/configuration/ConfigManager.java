@@ -170,7 +170,8 @@ public class ConfigManager {
 				byte meta = 0;
 				if (configitem.getString("Material").contains(":")) {
 					material = Material.getMaterial(configitem.getString("Material").split(":")[0]);
-					meta = Byte.parseByte(configitem.getString("Material").split(":")[1]);
+
+					//meta = Byte.parseByte(configitem.getString("Material").split(":")[1]);
 				} else {
 					material = Material.getMaterial(configitem.getString("Material"));
 				}
@@ -179,7 +180,7 @@ public class ConfigManager {
 					error = error.replace("{material}", configitem.getString("Material").split(":")[0]).replace("{item}", itemName);
 					ProjectKorraItems.createError(error);
 				} else {
-					item.setMaterial(new MaterialData(material, meta));
+					item.setMaterial(new MaterialData(material));
 				}
 			}
 			if (configitem.contains("Durability")) {
@@ -239,6 +240,10 @@ public class ConfigManager {
 					if (Attribute.isAttribute(key)) {
 						item.addAttribute(Attribute.getAttribute(key), new AttributeModification(Attribute.getAttribute(key), attributeList.getString(key), item));
 					} else {
+						if (key.equalsIgnoreCase("IgnoreBreakMessage") || key.equalsIgnoreCase("IgnoreDestroyMessage")) {
+							item.setIgnoreBreakMessage(true);
+							continue;
+						}
 						ProjectKorraItems.log.warning(languageConfig.get().getString("Item.Load.InvalidAttribute").replace("{attribute}", key).replace("{item}", itemName));
 					}
 				}

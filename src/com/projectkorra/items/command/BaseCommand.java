@@ -18,7 +18,7 @@ public class BaseCommand extends PKCommand {
 	@Override
 	public void execute(CommandSender sender, List<String> args) {
 		if (args.size() == 0) {
-			sender.sendMessage(ChatColor.RED + "/bending items equip " + ChatColor.YELLOW +  "Equip an item.");
+			//sender.sendMessage(ChatColor.RED + "/bending items equip " + ChatColor.YELLOW +  "Equip an item.");
 			sender.sendMessage(ChatColor.RED + "/bending items give <Item> [Amount] [Player] " + ChatColor.YELLOW + "Give an item.");
 			sender.sendMessage(ChatColor.RED + "/bending items list " + ChatColor.YELLOW + "List all items.");
 			sender.sendMessage(ChatColor.RED + "/bending items stats " + ChatColor.YELLOW +  "List item stats.");

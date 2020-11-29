@@ -15,7 +15,7 @@ public class AttributeModification {
 	private Attribute attribute;
 	private PKItem source;
 	
-	private static Method modifyAttributesMethod;
+	//private static Method modifyAttributesMethod;
 	
 	public AttributeModification(Attribute attribute, String modification, PKItem source) {
 		this.attribute = attribute;
@@ -80,7 +80,7 @@ public class AttributeModification {
 	 * @return True if it applied
 	 */
 	public boolean performModification(CoreAbility ability) {
-		if (modifyAttributesMethod == null) { //It hasn't been set before
+		/*if (modifyAttributesMethod == null) { //It hasn't been set before
 			try {
 				modifyAttributesMethod = CoreAbility.class.getDeclaredMethod("modifyAttributes");
 				modifyAttributesMethod.setAccessible(true);
@@ -88,27 +88,17 @@ public class AttributeModification {
 				ProjectKorraItems.createError("Failed to get modifyAttributes method within CoreAbility");
 				e.printStackTrace();
 			}
-		}
+		}*/
 		
-		if (attribute == null) return false;
-		if (!attribute.getPrefix().affects(ability)) return false;
-		int hash = ability.hashCode();
+		if (attribute == null || !attribute.affects(ability)) return false; //if the attribute doesn't affect the ability, it didn't work
 		if (modifier == null) {
 			ability.setAttribute(attribute.getSuffix().getActualAttributeName(), value);
-			System.out.println("Set " + attribute.getSuffix().getActualAttributeName() + " to " + value);
+			//System.out.println("Set " + attribute.getSuffix().getActualAttributeName() + " to " + value);
 		} else {
-			ability.addAttributeModifier(attribute.getSuffix().getActualAttributeName(), (Number) value, modifier).hashCode();
+			ability.addAttributeModifier(attribute.getSuffix().getActualAttributeName(), (Number) value, modifier);
 		}
-		
-		try {
-			modifyAttributesMethod.invoke(ability); //Force CoreAbility to change the values of it's variables
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			ProjectKorraItems.createError("Failed to invoke modifyAttributes method! Attributes not set!");
-			e.printStackTrace();
-		}
-		
-		System.out.println("Comparing hashes: " + hash + " | " + ability.hashCode());
-		return ability.hashCode() != hash; //If the ability has different values now
+
+		return true;
 	}
 	
 	public static boolean isValidModification(String modification) {

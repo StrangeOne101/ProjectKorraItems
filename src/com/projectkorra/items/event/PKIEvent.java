@@ -5,9 +5,4 @@ import org.bukkit.event.HandlerList;
 
 public abstract class PKIEvent extends Event {
 
-	@Override
-	public HandlerList getHandlers() {
-		return null;
-	}
-
 }

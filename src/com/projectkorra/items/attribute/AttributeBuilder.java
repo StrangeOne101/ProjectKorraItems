@@ -18,9 +18,10 @@ public class AttributeBuilder {
 	public static final Map<String, AttributePrefix> prefixes = new HashMap<String, AttributePrefix>();
 	public static final Map<String, AttributeSuffix> suffixes = new HashMap<String, AttributeSuffix>();
 	public static final Map<String, Attribute> attributes = new HashMap<String, Attribute>();
-	
+	private static final Map<Class<? extends CoreAbility>, Set<String>> abilityInnerAttributes = new HashMap<>();
+
 	private static final String[] basicSuffixes = {
-			com.projectkorra.projectkorra.attribute.Attribute.CHARGE_DURATION, 
+			com.projectkorra.projectkorra.attribute.Attribute.CHARGE_DURATION,
 			com.projectkorra.projectkorra.attribute.Attribute.COOLDOWN,
 			com.projectkorra.projectkorra.attribute.Attribute.DAMAGE,
 			com.projectkorra.projectkorra.attribute.Attribute.DURATION,
@@ -117,6 +118,22 @@ public class AttributeBuilder {
 		}
 		
 	}
+
+	/**
+	 * An attribute subclass that will check if the ability given actually has the attribute
+	 */
+	public static class BroadAttribute extends Attribute {
+
+		public BroadAttribute(AttributePrefix prefix, AttributeSuffix suffix, AttributeEvent event) {
+			super(prefix, suffix, event);
+		}
+
+		@Override
+		public boolean affects(CoreAbility ability) { //We are also checking if the ability contains the specific attribute
+			return super.affects(ability) && abilityInnerAttributes.containsKey(ability.getClass())
+					&& abilityInnerAttributes.get(ability.getClass()).contains(getSuffix().getActualAttributeName().toLowerCase());
+		}
+	}
 	
 	private static void setupBasicPrefixes() {
 		if (!prefixes.isEmpty()) return; //We have already set up
@@ -193,6 +210,11 @@ public class AttributeBuilder {
 						suffix = new AttributeSuffix(attributeFieldName, attributeFieldName);
 						suffixes.put(attributeFieldName.toLowerCase(), suffix); //Register the suffix in case it needs to be used next time
 					}
+
+					if (!abilityInnerAttributes.containsKey(clazz)) {
+						abilityInnerAttributes.put(clazz, new HashSet<String>());
+					}
+					abilityInnerAttributes.get(clazz).add(attributeFieldName.toLowerCase());
 					
 					Attribute attribute = new Attribute(prefix, suffix);
 					attributes.put(prefix.getPrefix().toLowerCase() + suffix.getName().toLowerCase(), attribute);
@@ -201,12 +223,12 @@ public class AttributeBuilder {
 		}
 		
 		//For every suffix added from the classes, create attributes from those suffixes for Elements, Combos, etc
-		for (AttributePrefix prefix : basicPrefixes) { //Elements, combos, subs, etc
+		for (AttributePrefix prefix : basicPrefixes) { //Elements, combos, subs, etc. Not including individual element prefixes
 			for (AttributeSuffix suffix : suffixes.values()) {
-				Attribute attribute = new Attribute(prefix, suffix);
+				Attribute attribute = new BroadAttribute(prefix, suffix, AttributeEvent.ABILITY_START);
 				
 				if (suffix.getActualAttributeName().equals("Resistance")) {
-					attribute = new Attribute(prefix, suffix, AttributeEvent.DAMAGE_RECIEVED);
+					attribute = new BroadAttribute(prefix, suffix, AttributeEvent.DAMAGE_RECIEVED);
 				}
 				
 				attributes.put(prefix.getPrefix().toLowerCase() + suffix.getName().toLowerCase(), attribute);
@@ -215,7 +237,7 @@ public class AttributeBuilder {
 		
 		addAttributeAlias(attributes.get("eartharmorgoldenhearts"), "eartharmorhearts");
 		
-		ProjectKorraItems.log.info("Registered " + attributes.size() + " attributes in " + (System.currentTimeMillis() - time) + "ms");
+		//ProjectKorraItems.log.info("Registered " + attributes.size() + " attributes in " + (System.currentTimeMillis() - time) + "ms");
 		
 		/*for (AttributePrefix prefix : prefixes.values()) {
 			for (String suffixString : basicSuffixes) {
