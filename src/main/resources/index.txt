@@ -1,0 +1,15 @@
+config.yml
+loot/simple_dungeon.yml
+loot/desert_pyramid.yml
+loot/village/village_armorer.yml
+drops/zombie.yml
+items/examples.yml
+items/sigils.yml
+items/examples.yml
+items/air_infinity_stones.yml
+items/earth_infinity_stones.yml
+items/water_infinity_stones.yml
+items/fire_infinity_stones.yml
+items/fire_armor.yml
+items/misc_water.yml
+items/meteorite.yml

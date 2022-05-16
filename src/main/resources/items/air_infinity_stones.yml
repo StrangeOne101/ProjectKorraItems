@@ -1,0 +1,46 @@
+AirInfinityStone:
+  Name: "&d&lINFINITY STONE &f&l(AIR)"
+  Material: white_glazed_terracotta
+  Lore:
+    - ""
+    - "&7Makes you immune to &fairbending&7 when held"
+    - "&7in the inventory and buffs it by &e50%"
+  Glow: true
+  Usage: INVENTORY
+  Durability: 200
+  Attributes:
+    AirAbilityResistance: 100%
+    AirAbilityDamage: 150%
+    AirAbilityRange: 150%
+    AirAbilityHeight: 150%
+    AirAbilityWidth: 150%
+    AirAbilitySpeed: 150%
+    AirAbilityCooldown: 120%
+  ShapedRecipe:
+    Recipe:
+      - '@AirInfinityShard, @AirInfinityShard, @AirInfinityShard'
+      - '@AirInfinityShard, @AirInfinityShard, @AirInfinityShard'
+      - '@AirInfinityShard, @AirInfinityShard, @AirInfinityShard'
+AirInfinityShard:
+  Name: "&dINFINITY SHARD &f(AIR)"
+  Material: PLAYER_HEAD
+  Skin: "4f61e125d2f3b7b0a4898a978b1e84f89663850fe290eae77a8f93adfb8db9b1"
+  Lore:
+    - ""
+    - "&7Makes you resistant to &fairbending &7 by"
+    - "&e10%&7 and buffs it by &e5% &7when held in"
+    - "&7the inventory"
+  Usage: INVENTORY
+  Attributes:
+    AirAbilityResistance: 10%
+    AirAbilityDamage: 105%
+    AirAbilityRange: 105%
+    AirAbilityHeight: 105%
+    AirAbilityWidth: 105%
+    AirAbilitySpeed: 105%
+    AirAbilityCooldown: 102%
+  ShapelessRecipe:
+    Ingredients:
+      - '@AirSigil'
+      - 'DIAMOND'
+    Amount: 1

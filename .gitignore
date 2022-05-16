@@ -6,11 +6,15 @@
 .project
 .metadata
 bin/
+out/
+.idea/
+target/
 tmp/
 *.tmp
 *.bak
 *.swp
 *~.nib
+*.iml
 local.properties
 .classpath
 .settings/

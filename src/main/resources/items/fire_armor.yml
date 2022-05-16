@@ -1,0 +1,92 @@
+FireHelmet:
+  Name: "&cFire Nation Helmet"
+  Material: LEATHER_HELMET
+  Glow: true
+  Color: "#630604"
+  Durability: 220
+  Usage: WEAR
+  Armor: 2
+  Attributes:
+    FireResistance: 5%
+    FireDamage: +5%
+    FireRange: +5%
+    FireSpeed: +5%
+    FireCooldown: -5%
+  Lore:
+    - ""
+    - "&7Enhances your &cfirebending &7and raises your"
+    - "&7fire resistance"
+  ShapelessRecipe:
+    Ingredients:
+      - IRON_HELMET
+      - '@FireSigil'
+    Amount: 1
+FireChestplate:
+  Name: "&cFire Nation Chestplate"
+  Material: LEATHER_CHESTPLATE
+  Glow: true
+  Color: "#630604"
+  Durability: 220
+  Usage: WEAR
+  Armor: 2
+  Attributes:
+    FireResistance: 5%
+    FireDamage: +5%
+    FireRange: +5%
+    FireSpeed: +5%
+    FireCooldown: -5%
+  Lore:
+    - ""
+    - "&7Enhances your &cfirebending &7and raises your"
+    - "&7fire resistance"
+  ShapelessRecipe:
+    Ingredients:
+      - IRON_CHESTPLATE
+      - '@FireSigil'
+    Amount: 1
+FireLeggings:
+  Name: "&cFire Nation Leggings"
+  Material: LEATHER_LEGGINGS
+  Glow: true
+  Color: "#630604"
+  Durability: 220
+  Usage: WEAR
+  Armor: 2
+  Attributes:
+    FireResistance: 5%
+    FireDamage: +5%
+    FireRange: +5%
+    FireSpeed: +5%
+    FireCooldown: -5%
+  Lore:
+    - ""
+    - "&7Enhances your &cfirebending &7and raises your"
+    - "&7fire resistance"
+  ShapelessRecipe:
+    Ingredients:
+      - IRON_LEGGINGS
+      - '@FireSigil'
+    Amount: 1
+FireBoots:
+  Name: "&cFire Nation Boots"
+  Material: LEATHER_BOOTS
+  Glow: true
+  Color: "#630604"
+  Durability: 220
+  Usage: WEAR
+  Armor: 2
+  Attributes:
+    FireResistance: 5%
+    FireDamage: +5%
+    FireRange: +5%
+    FireSpeed: +5%
+    FireCooldown: -5%
+  Lore:
+    - ""
+    - "&7Enhances your &cfirebending &7and raises your"
+    - "&7fire resistance"
+  ShapelessRecipe:
+    Ingredients:
+      - IRON_BOOTS
+      - '@FireSigil'
+    Amount: 1

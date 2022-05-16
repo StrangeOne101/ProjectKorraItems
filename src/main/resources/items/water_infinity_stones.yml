@@ -1,0 +1,45 @@
+WaterInfinityStone:
+  Name: "&d&lINFINITY STONE &9&l(WATER)"
+  Material: blue_glazed_terracotta
+  Lore:
+    - ""
+    - "&7Makes you immune to &9waterbending &7when held"
+    - "&7in the inventory and buffs it by &e50%"
+  Glow: true
+  Usage: INVENTORY
+  Durability: 200
+  Attributes:
+    WaterAbilityResistance: 100%
+    WaterAbilityDamage: 150%
+    WaterAbilityRange: 150%
+    WaterAbilityHeight: 150%
+    WaterAbilityWidth: 150%
+    WaterAbilitySpeed: 150%
+    WaterAbilityCooldown: 120%
+  ShapedRecipe:
+    Recipe:
+      - '@WaterInfinityShard, @WaterInfinityShard, @WaterInfinityShard'
+      - '@WaterInfinityShard, @WaterInfinityShard, @WaterInfinityShard'
+      - '@WaterInfinityShard, @WaterInfinityShard, @WaterInfinityShard'
+WaterInfinityShard:
+  Name: "&dINFINITY SHARD &9(WATER)"
+  Material: PLAYER_HEAD
+  Skin: "cfcebe54dbc345ea7e22206f703e6b33befbe95b6a918bd1754b76188bc65bb5"
+  Lore:
+    - ""
+    - "&7Makes you resistant to &9waterbending &7by"
+    - "&e10%&7 and buffs it by &e5% &7when held in the inventory"
+  Usage: INVENTORY
+  Attributes:
+    WaterResistance: 10%
+    WaterAbilityDamage: 105%
+    WaterAbilityRange: 105%
+    WaterAbilityHeight: 105%
+    WaterAbilityWidth: 105%
+    WaterAbilitySpeed: 105%
+    WaterAbilityCooldown: 102%
+  ShapelessRecipe:
+    Ingredients:
+      - '@WaterSigil'
+      - 'DIAMOND'
+    Amount: 1

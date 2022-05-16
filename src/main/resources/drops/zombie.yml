@@ -1,0 +1,31 @@
+Item1:
+  Item: FireSigill
+  Amount: 1
+  Chance: 0.02
+  KilledBy:
+    - FireAbility
+    - FIRE
+Item2:
+  Item: WaterSigill
+  Amount: 1
+  Chance: 0.02
+  KilledBy:
+    - WaterAbility
+Item3:
+  Item: EarthSigill
+  Amount: 1
+  Chance: 0.02
+  KilledBy:
+    - EarthAbility
+Item4:
+  Item: AirSigill
+  Amount: 1
+  Chance: 0.02
+  KilledBy:
+    - AirAbility
+Item5:
+  Item: ICE
+  Amount: 1
+  Chance: 0.08
+  KilledBy:
+    - IceAbility

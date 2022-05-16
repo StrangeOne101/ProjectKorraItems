@@ -1,0 +1,46 @@
+EarthInfinityStone:
+  Name: "&d&lINFINITY STONE &b&l(EARTH)"
+  Material: lime_glazed_terracotta
+  Lore:
+    - ""
+    - "&7Makes you immune to &bearthbending &7when held"
+    - "&7in the inventory and buffs it by &e50%"
+  Glow: true
+  Usage: INVENTORY
+  Durability: 200
+  Attributes:
+    EarthResistance: 100%
+    EarthDamage: 150%
+    EarthRange: 150%
+    EarthHeight: 150%
+    EarthWidth: 150%
+    EarthSpeed: 150%
+    EarthCooldown: 120%
+  ShapedRecipe:
+    Recipe:
+      - '@EarthInfinityShard, @EarthInfinityShard, @EarthInfinityShard'
+      - '@EarthInfinityShard, @EarthInfinityShard, @EarthInfinityShard'
+      - '@EarthInfinityShard, @EarthInfinityShard, @EarthInfinityShard'
+    Amount: 1
+EarthInfinityShard:
+  Name: "&dINFINITY SHARD &b(EARTH)"
+  Material: PLAYER_HEAD
+  Skin: "cfcebe54dbc345ea7e22206f703e6b33befbe95b6a918bd1754b76188bc65bb5"
+  Lore:
+    - ""
+    - "&7Makes you resistant to &bearthbending &7by"
+    - "&e10%&7 and buffs it by &e5% &7when held in the inventory"
+  Usage: INVENTORY
+  Attributes:
+    EarthResistance: 10%
+    EarthAbilityDamage: 105%
+    EarthAbilityRange: 105%
+    EarthAbilityHeight: 105%
+    EarthAbilityWidth: 105%
+    EarthAbilitySpeed: 105%
+    EarthAbilityCooldown: 102%
+  ShapelessRecipe:
+    Ingredients:
+      - '@EarthSigil'
+      - 'DIAMOND'
+    Amount: 1

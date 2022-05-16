@@ -1,0 +1,31 @@
+CompressedSnow:
+  Name: "Compressed Snow"
+  Material: SNOW_BLOCK
+  ShapedRecipe:
+    Recipe:
+      - 'SNOW_BLOCK, SNOW_BLOCK'
+      - 'SNOW_BLOCK, SNOW_BLOCK'
+SnowFallBoots:
+  Name: "&bSnow Fall Boots"
+  Material: LEATHER_BOOTS
+  Color: "#75c6ff"
+  Durability: 40
+  Usage: WEAR
+  Armor: 2
+  Attributes:
+    WaterSpoutDuration: +1500
+    IceBreathDuration: +1500
+  Lore:
+    - "&7Makes you take less fall damage"
+    - "&7as a waterbender"
+  ShapedRecipe:
+    Recipe:
+      - '@CompressedSnow, AIR, @CompressedSnow'
+      - '@CompressedSnow, AIR, @CompressedSnow'
+    Amount: 1
+  Requirements:
+    Elements:
+      - WATER
+  Enchantments:
+    feather_falling: 2
+  HideEnchants: true
