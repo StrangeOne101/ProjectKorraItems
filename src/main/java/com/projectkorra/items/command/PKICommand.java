@@ -1,6 +1,8 @@
 package com.projectkorra.items.command;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -115,6 +117,10 @@ public abstract class PKICommand implements SubCommand {
 			sender.sendMessage(ChatColor.RED + "You must be a player to use that command.");
 			return false;
 		}
+	}
+
+	protected List<String> getTabCompletion(final CommandSender sender, final List<String> args) {
+		return new ArrayList<>();
 	}
 	
 }

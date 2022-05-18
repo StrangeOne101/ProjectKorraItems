@@ -143,11 +143,15 @@ public class ConfigManager {
 		Map<CustomItem, File> tempFileLocations = new HashMap<>();
 		Set<Triple<PKItem, String, ConfigurationSection>> recipesToDoLater = new HashSet<>();
 
+		int registered = 0;
+		int files = 0;
+
 		for (File file : FileUtils.listFiles(itemFolder, new String[] {"yml"}, true)) {
 			YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
 			String pathName = file.getAbsolutePath().substring(itemFolder.getAbsolutePath().length() + 1);
 
+			itemloop:
 			for (String itemName : config.getKeys(false)) {
 				ConfigurationSection configitem = config.getConfigurationSection(itemName);
 
@@ -156,7 +160,7 @@ public class ConfigManager {
 					error = error.replace("{item}", itemName).replace("{file1}", pathName)
 							.replace("{file2}", tempFileLocations.get(CustomItemRegistry.getCustomItem(itemName)).getName());
 					ProjectKorraItems.createError(error);
-					continue;
+					continue itemloop;
 				}
 
 				String material = configitem.getString("Material", "Stick").toUpperCase(Locale.ROOT);
@@ -176,7 +180,7 @@ public class ConfigManager {
 					error = error.replace("{material}", material)
 							.replace("{item}", itemName).replace("{file}", pathName);
 					ProjectKorraItems.createError(error);
-					material = Material.STICK.toString();
+					continue itemloop;
 				}
 
 				PKItem item = (PKItem) new PKItem(itemName, Material.getMaterial(material))
@@ -281,7 +285,7 @@ public class ConfigManager {
 										.replace("{file}", pathName);
 
 								ProjectKorraItems.createError(error);
-								continue;
+								continue itemloop;
 							}
 						}
 
@@ -353,6 +357,7 @@ public class ConfigManager {
 
 				item.register();
 				tempFileLocations.put(item, file);
+				registered++;
 
 				ProjectKorraItems.log.info(item.getInternalName() + " registered");
 
@@ -361,14 +366,20 @@ public class ConfigManager {
 					recipesToDoLater.add(new ImmutableTriple<>(item, pathName, configitem));
 				}
 			}
+
+			files++;
 		}
 		
-
+		if (registered > 0) {
+			ProjectKorraItems.log.info("Registered " + registered + " custom items in " + files + " different files!");
+		}
 
 		registerRecipes(recipesToDoLater);
 	}
 
 	public void registerRecipes(Set<Triple<PKItem, String, ConfigurationSection>> items) {
+
+		int registered = 0;
 
 		itemloop:
 		for (Triple<PKItem, String, ConfigurationSection> pair : items) {
@@ -520,6 +531,11 @@ public class ConfigManager {
 					RecipeManager.addToRecipeBookAuto(recipe);
 				}
 			}
+			registered++;
+		}
+
+		if (registered > 0) {
+			ProjectKorraItems.log.info("Registered "+ registered + " custom recipes for items.");
 		}
 	}
 

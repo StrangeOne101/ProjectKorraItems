@@ -6,6 +6,7 @@ FireHelmet:
   Durability: 220
   Usage: WEAR
   Armor: 2
+  HideDye: true
   Attributes:
     FireResistance: 5%
     FireDamage: +5%
@@ -29,6 +30,7 @@ FireChestplate:
   Durability: 220
   Usage: WEAR
   Armor: 2
+  HideDye: true
   Attributes:
     FireResistance: 5%
     FireDamage: +5%
@@ -52,6 +54,7 @@ FireLeggings:
   Durability: 220
   Usage: WEAR
   Armor: 2
+  HideDye: true
   Attributes:
     FireResistance: 5%
     FireDamage: +5%
@@ -75,6 +78,7 @@ FireBoots:
   Durability: 220
   Usage: WEAR
   Armor: 2
+  HideDye: true
   Attributes:
     FireResistance: 5%
     FireDamage: +5%

@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import com.projectkorra.items.loot.LootManager;
+import com.projectkorra.items.menu.MenuListener;
 import com.strangeone101.holoitemsapi.HoloItemsAPI;
 import com.strangeone101.holoitemsapi.itemevent.EventCache;
 import org.bukkit.Bukkit;
@@ -32,7 +33,6 @@ import com.projectkorra.items.command.RecipeCommand;
 import com.projectkorra.items.command.ReloadCommand;
 import com.projectkorra.items.command.TestCommand;
 import com.projectkorra.items.configuration.ConfigManager;
-import com.projectkorra.items.customs.PKIDisplay;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -71,10 +71,11 @@ public class ProjectKorraItems extends JavaPlugin {
 
 		HoloItemsAPI.setup(this);
 		
-		PKIDisplay.displays = new ConcurrentHashMap<Player, PKIDisplay>();
+
 		
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvents(new PKIListener(), this);
+		pm.registerEvents(new MenuListener(), this);
 
 		try {
 			MetricsLite metrics = new MetricsLite(this);
@@ -90,9 +91,7 @@ public class ProjectKorraItems extends JavaPlugin {
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info(pdfFile.getName() + " Has Been Disabled!");
 		
-		if (PKIDisplay.displays != null && !PKIDisplay.displays.isEmpty()) {
-			PKIDisplay.cleanup();
-		}
+
 	}
 
 	public void reload() {

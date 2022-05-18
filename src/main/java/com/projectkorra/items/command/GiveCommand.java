@@ -1,7 +1,9 @@
 package com.projectkorra.items.command;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.projectkorra.items.menu.GiveMenu;
 import com.strangeone101.holoitemsapi.CustomItemRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,7 +17,7 @@ import com.projectkorra.items.configuration.ConfigManager;
 public class GiveCommand extends PKICommand {
 
 	public GiveCommand() {
-		super("give", "/bending items give <item> [amount] [player]", "This command gives you or another player a bending item.", new String[] { "give", "g", "giv" });
+		super("give", "/bending items give [item] [player] [amount]", "This command gives you or another player a bending item.", new String[] { "give", "g", "giv" });
 	}
 
 	@Override
@@ -30,7 +32,9 @@ public class GiveCommand extends PKICommand {
 				return;
 			}
 			if (args.size() == 0) {
-				String s = ChatColor.GOLD + "Item Names: " + ChatColor.YELLOW;
+				new GiveMenu().openMenu((Player)sender);
+
+				/*String s = ChatColor.GOLD + "Item Names: " + ChatColor.YELLOW;
 				String s1 = "";
 				int size = CustomItemRegistry.getCustomItems().size() > 10 ? 10 : CustomItemRegistry.getCustomItems().size();
 				for (int i = 0; i < size; i++) {
@@ -46,7 +50,7 @@ public class GiveCommand extends PKICommand {
 				if (size > 10) {
 					sender.sendMessage(ChatColor.YELLOW + "Use " + ChatColor.GOLD + "/bending items list [page]" + ChatColor.YELLOW + " to list them all.");
 				}
-				return;
+				return;*/
 			} else if (args.size() >= 1) {
 				Player player = (Player)sender;
 				
@@ -84,5 +88,20 @@ public class GiveCommand extends PKICommand {
 				}
 			}
 		}
+	}
+
+
+	@Override
+	protected List<String> getTabCompletion(CommandSender sender, List<String> args) {
+		ArrayList list = new ArrayList();
+
+		if (args.size() < 2) {
+			list.addAll(CustomItemRegistry.getCustomItems().keySet());
+		} else if (args.size() < 3) {
+			list.addAll(Bukkit.getOnlinePlayers());
+		} else if (args.size() < 4) {
+			list.add("1");
+		}
+		return list;
 	}
 }

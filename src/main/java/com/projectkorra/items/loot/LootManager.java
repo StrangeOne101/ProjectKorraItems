@@ -47,7 +47,6 @@ public class LootManager {
             }
 
             LootTable table = Bukkit.getLootTable(key);
-            LootTables.
 
             if (table == null || table.getKey().getKey().equals("empty")) {
                 String s = ConfigManager.languageConfig.get().getString("Loot.InvalidTable").replace("{loottable}", tableName);

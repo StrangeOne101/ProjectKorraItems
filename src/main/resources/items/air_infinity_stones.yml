@@ -24,7 +24,7 @@ AirInfinityStone:
 AirInfinityShard:
   Name: "&dINFINITY SHARD &f(AIR)"
   Material: PLAYER_HEAD
-  Skin: "4f61e125d2f3b7b0a4898a978b1e84f89663850fe290eae77a8f93adfb8db9b1"
+  Texture: "4f61e125d2f3b7b0a4898a978b1e84f89663850fe290eae77a8f93adfb8db9b1"
   Lore:
     - ""
     - "&7Makes you resistant to &fairbending &7 by"
