@@ -18,6 +18,7 @@ import com.projectkorra.items.loot.LootManager;
 import com.projectkorra.items.menu.MenuListener;
 import com.strangeone101.holoitemsapi.HoloItemsAPI;
 import com.strangeone101.holoitemsapi.itemevent.EventCache;
+import com.strangeone101.holoitemsapi.recipe.RecipeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -88,10 +89,10 @@ public class ProjectKorraItems extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		PluginDescriptionFile pdfFile = this.getDescription();
-		log.info(pdfFile.getName() + " Has Been Disabled!");
-		
+		RecipeManager.unregisterAll(); //For all recipes handled by the recipe manager
+		ConfigManager.unregisterRecipes(); //For all recipes not using the Holoitem recipe manager
 
+		log.info("ProjectKorraItems has been disabled!");
 	}
 
 	public void reload() {

@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import com.projectkorra.items.ProjectKorraItems;
-import com.projectkorra.items.attribute.Attribute;
+import com.projectkorra.items.attribute.AttributeEvent;
 import com.strangeone101.holoitemsapi.CustomItem;
 import com.strangeone101.holoitemsapi.CustomItemRegistry;
 import com.strangeone101.holoitemsapi.itemevent.Position;
 import org.apache.commons.lang3.tuple.Triple;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,7 +25,6 @@ import com.projectkorra.items.PKItem;
 import com.projectkorra.items.attribute.AttributeBuilder;
 import com.projectkorra.items.attribute.AttributeModification;
 import com.projectkorra.items.configuration.ConfigManager;
-import com.projectkorra.items.utils.GenericUtil;
 import com.projectkorra.items.utils.ItemUtils;
 
 public class TestCommand extends PKICommand {
@@ -107,14 +106,20 @@ public class TestCommand extends PKICommand {
 			} else if (args.get(0).equalsIgnoreCase("unhexid")) {
 				//sender.sendMessage(ChatColor.BLUE + "Unhexed ID is '" + PKItem.findID(args.get(1).replace('&', '\u00A7')) + "'");
 			} else if (args.get(0).equalsIgnoreCase("listattr")) {
-				sender.sendMessage("Found " + ChatColor.BLUE + AttributeBuilder.attributes.keySet().size() + " attributes overall");
+				sender.sendMessage("Found " + ChatColor.BLUE + AttributeBuilder.types.keySet().size() + " traits");
+				sender.sendMessage("Found " + ChatColor.BLUE + AttributeBuilder.targets.keySet().size() + " targets");
 				int page = 1;
 				
 				if (args.size() > 1) page = Integer.parseInt(args.get(1));
-				
-				for (int i = (page - 1) * 10; i <= (page - 1) * 10 + 10 && i < AttributeBuilder.attributes.size(); i++) {
-					sender.sendMessage(ChatColor.BLUE + AttributeBuilder.attributes.keySet().toArray()[i].toString());
-				}				
+
+				List<String> things = new ArrayList<>();
+				things.addAll(AttributeBuilder.targets.values().stream().map(t -> "Target: " + t.getPrefix()).collect(Collectors.toList()));
+				things.addAll(AttributeBuilder.types.values().stream().map(t -> "Trait: " + t.getActualAttributeName()).collect(Collectors.toList()));
+
+
+				for (int i = (page - 1) * 10; i <= (page - 1) * 10 + 10 && i < things.size(); i++) {
+					sender.sendMessage(ChatColor.BLUE + things.get(i));
+				}
 			} else if (args.get(0).equalsIgnoreCase("testitem")) {
 				if (!PKItem.isPKItem(stack)) {
 					sender.sendMessage(ChatColor.BLUE + "isPKItem(item) = false");
@@ -140,14 +145,14 @@ public class TestCommand extends PKICommand {
 					ItemStack stack_ = items.get(mod).getRight();
 					PKItem item = items.get(mod).getLeft();
 					
-					sender.sendMessage(ChatColor.BLUE + item.getInternalName() + " (" + item.getUsage() + ") - " + mod.getAttribute().getAttributeName() + ": " + mod.getModifier() + " " + mod.getValue());
+					sender.sendMessage(ChatColor.BLUE + item.getInternalName() + " (" + item.getUsage() + ") - " + mod.getAttributeTarget().getPrefix() + mod.getAttributeTrait().getActualAttributeName() + ": " + mod.getModifier() + " " + mod.getValue());
 				}
 			} else if (args.get(0).equalsIgnoreCase("dump")) {
 				List<String> lines = new ArrayList<>();
-				for (String attrS : AttributeBuilder.attributes.keySet()) {
+				/*for (String attrS : AttributeBuilder.attributes.keySet()) {
 					Attribute attr = Attribute.getAttribute(attrS);
 					lines.add(attr.getAttributeName() + " - " + attr.getPrefix().getPrefix());
-				}
+				}*/
 
 				try {
 					Files.write(new File(ProjectKorraItems.plugin.getDataFolder(), "attributes.debug").toPath(), lines, StandardCharsets.UTF_8);

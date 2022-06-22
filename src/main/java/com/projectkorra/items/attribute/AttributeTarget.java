@@ -2,12 +2,12 @@ package com.projectkorra.items.attribute;
 
 import com.projectkorra.projectkorra.ability.CoreAbility;
 
-public abstract class AttributePrefix {
+public abstract class AttributeTarget {
 	
 	private String prefix;
 	private AttributePriority priority;
 	
-	public AttributePrefix(String prefix, AttributePriority priority) {
+	public AttributeTarget(String prefix, AttributePriority priority) {
 		this.prefix = prefix;
 		this.priority = priority;
 	}

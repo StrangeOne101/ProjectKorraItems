@@ -1,41 +1,39 @@
 package com.projectkorra.items;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.projectkorra.items.event.PKItemDamageEvent;
-import com.projectkorra.items.utils.ItemUtils;
-import com.projectkorra.projectkorra.ability.CoreAbility;
-import com.projectkorra.projectkorra.event.AbilityStartEvent;
+import com.projectkorra.items.attribute.AttributeEvent;
 import com.strangeone101.holoitemsapi.CustomItem;
 import com.strangeone101.holoitemsapi.CustomItemRegistry;
 import com.strangeone101.holoitemsapi.HoloItemsAPI;
-import com.strangeone101.holoitemsapi.Keys;
+
 import com.strangeone101.holoitemsapi.Properties;
 import com.strangeone101.holoitemsapi.itemevent.ActiveConditions;
-import com.strangeone101.holoitemsapi.itemevent.EventContext;
-import com.strangeone101.holoitemsapi.itemevent.ItemEvent;
+
 import com.strangeone101.holoitemsapi.util.UUIDTagType;
-import org.bukkit.Bukkit;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
+
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.ItemFlag;
+
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.projectkorra.items.attribute.Attribute;
 import com.projectkorra.items.attribute.AttributeModification;
 import com.projectkorra.items.attribute.Requirements;
 import com.projectkorra.items.configuration.ConfigManager;
-import com.projectkorra.items.utils.GenericUtil;
+
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -43,7 +41,9 @@ public class PKItem extends CustomItem {
 
 	protected Usage usage;
 	protected Requirements req = new Requirements();
-	protected Map<Attribute, AttributeModification> attributes = new HashMap<Attribute, AttributeModification>();
+	protected Map<AttributeEvent, Set<AttributeModification>> attributes = new HashMap<>();
+	protected String file = "(Unknown)";
+
 	
 	public PKItem(String name, Material material) {
 		super(name, material);
@@ -266,11 +266,14 @@ public class PKItem extends CustomItem {
 		return true;
 	}
 	
-	public void addPKIAttribute(Attribute attribute, AttributeModification value) {
-		attributes.put(attribute, value);
+	public void addPKIAttribute(AttributeModification attributeMod) {
+		if (!attributes.containsKey(attributeMod.getAttributeTrait().getEvent())) {
+			attributes.put(attributeMod.getAttributeTrait().getEvent(), new HashSet<>());
+		}
+		attributes.get(attributeMod.getAttributeTrait().getEvent()).add(attributeMod);
 	}
 	
-	public Map<Attribute, AttributeModification> getPKIAttributes() {
+	public Map<AttributeEvent, Set<AttributeModification>> getPKIAttributes() {
 		return attributes;
 	}
 	
@@ -303,7 +306,16 @@ public class PKItem extends CustomItem {
 	public boolean isPlayedLocked() {
 		return this.getProperties().contains(Properties.OWNER);
 	}
-	
+
+	public String getFileLocation() {
+		return file;
+	}
+
+	public PKItem setFileLocation(String file) {
+		this.file = file;
+		return this;
+	}
+
 	public enum Usage {
 		CONSUMABLE, WEARABLE, HOLD, INVENTORY, NONE;
 
@@ -333,13 +345,14 @@ public class PKItem extends CustomItem {
 		}
 
 		public String toString() {
-			return switch (this) {
-				case CONSUMABLE -> "Consumable";
-				case WEARABLE -> "Wearable";
-				case HOLD -> "Hold";
-				case INVENTORY -> "Inventory";
-				case NONE -> "None";
-			};
+			switch (this) {
+				case CONSUMABLE: return "Consumable";
+				case WEARABLE: return "Wearable";
+				case HOLD: return "Hold";
+				case INVENTORY: return "Inventory";
+				case NONE:
+				default: return "None";
+			}
 		}
 
 		public static Usage[] getRealValues() {
@@ -347,12 +360,14 @@ public class PKItem extends CustomItem {
 		}
 
 		public ActiveConditions toConditions() {
-			return switch (this) {
-				case HOLD -> ActiveConditions.HELD;
-				case CONSUMABLE, INVENTORY -> ActiveConditions.INVENTORY;
-				case WEARABLE -> ActiveConditions.EQUIPED;
-				case NONE -> ActiveConditions.NONE;
-			};
+			switch (this) {
+				case HOLD: return ActiveConditions.HELD;
+				case CONSUMABLE:
+				case INVENTORY: return ActiveConditions.INVENTORY;
+				case WEARABLE: return ActiveConditions.EQUIPED;
+				case NONE:
+				default: return ActiveConditions.NONE;
+			}
 		}
 	}
 

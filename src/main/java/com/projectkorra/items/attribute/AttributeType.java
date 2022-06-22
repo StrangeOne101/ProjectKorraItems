@@ -1,16 +1,22 @@
 package com.projectkorra.items.attribute;
 
-public class AttributeSuffix {
-	
+public class AttributeType {
+
 	private String name;
 	private String actualAttributeName;
+	private AttributeEvent event;
 	
-	public AttributeSuffix(String name, String actualAttributeName) {
+	public AttributeType(String name, String actualAttributeName, AttributeEvent eventType) {
 		this.name = name;
 		this.actualAttributeName = actualAttributeName;
+		this.event = eventType;
+	}
+
+	public AttributeType(String name, String actualAttributeName) {
+		this(name, actualAttributeName, AttributeEvent.ABILITY_START);
 	}
 	
-	public AttributeSuffix(String name) {
+	public AttributeType(String name) {
 		this(name, name);
 	}
 	
@@ -38,5 +44,9 @@ public class AttributeSuffix {
 	
 	void setName(String name) {
 		this.name = name;
+	}
+
+	public AttributeEvent getEvent() {
+		return event;
 	}
 }

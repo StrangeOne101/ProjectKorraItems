@@ -8,11 +8,12 @@ FireHelmet:
   Armor: 2
   HideDye: true
   Attributes:
-    FireResistance: 5%
-    FireDamage: +5%
-    FireRange: +5%
-    FireSpeed: +5%
-    FireCooldown: -5%
+    FireAbility:
+      Resistance: 5%
+      Damage: +5%
+      Range: +5%
+      Speed: +5%
+      Cooldown: -5%
   Lore:
     - ""
     - "&7Enhances your &cfirebending &7and raises your"
@@ -32,11 +33,12 @@ FireChestplate:
   Armor: 2
   HideDye: true
   Attributes:
-    FireResistance: 5%
-    FireDamage: +5%
-    FireRange: +5%
-    FireSpeed: +5%
-    FireCooldown: -5%
+    FireAbility:
+      Resistance: 5%
+      Damage: +5%
+      Range: +5%
+      Speed: +5%
+      Cooldown: -5%
   Lore:
     - ""
     - "&7Enhances your &cfirebending &7and raises your"
@@ -56,11 +58,12 @@ FireLeggings:
   Armor: 2
   HideDye: true
   Attributes:
-    FireResistance: 5%
-    FireDamage: +5%
-    FireRange: +5%
-    FireSpeed: +5%
-    FireCooldown: -5%
+    FireAbility:
+      Resistance: 5%
+      Damage: +5%
+      Range: +5%
+      Speed: +5%
+      Cooldown: -5%
   Lore:
     - ""
     - "&7Enhances your &cfirebending &7and raises your"
@@ -80,11 +83,12 @@ FireBoots:
   Armor: 2
   HideDye: true
   Attributes:
-    FireResistance: 5%
-    FireDamage: +5%
-    FireRange: +5%
-    FireSpeed: +5%
-    FireCooldown: -5%
+    FireAbility:
+      Resistance: 5%
+      Damage: +5%
+      Range: +5%
+      Speed: +5%
+      Cooldown: -5%
   Lore:
     - ""
     - "&7Enhances your &cfirebending &7and raises your"

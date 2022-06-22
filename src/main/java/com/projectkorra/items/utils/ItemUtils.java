@@ -1,8 +1,6 @@
 package com.projectkorra.items.utils;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,11 +8,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.projectkorra.items.attribute.AttributeEvent;
 import com.strangeone101.holoitemsapi.CustomItem;
 import com.strangeone101.holoitemsapi.itemevent.EventCache;
 import com.strangeone101.holoitemsapi.itemevent.EventContext;
@@ -25,7 +22,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.projectkorra.items.PKItem;
 
@@ -269,6 +265,10 @@ public class ItemUtils {
 	//}
 
 	public static Map<AttributeModification, Triple<PKItem, Position, ItemStack>> getActive(Player player) {
+		return getActive(player, null);
+	}
+
+	public static Map<AttributeModification, Triple<PKItem, Position, ItemStack>> getActive(Player player, AttributeEvent eventType) {
 		List<EventContext> contexts = new ArrayList<>();
 		Set<CustomItem> items = new HashSet<>();
 		SortedSet<Triple<PKItem, Position, ItemStack>> sorted = new TreeSet<>(Comparator.comparingInt(p -> p.getMiddle().ordinal()));
@@ -295,8 +295,11 @@ public class ItemUtils {
 		}
 
 		HashMap<AttributeModification, Triple<PKItem, Position, ItemStack>> sortedMap = new LinkedHashMap<>();
+		AttributeEvent[] events = eventType == null ? AttributeEvent.values() : new AttributeEvent[] {eventType};
 		for (Triple<PKItem, Position, ItemStack> trip : sorted) {
-			trip.getLeft().getPKIAttributes().forEach((k, v) -> sortedMap.put(v, trip));
+			for (AttributeEvent event : events) {
+				trip.getLeft().getPKIAttributes().get(event).forEach((v) -> sortedMap.put(v, trip));
+			}
 		}
 		return sortedMap;
 	}

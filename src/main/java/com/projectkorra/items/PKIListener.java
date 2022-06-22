@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.projectkorra.items.attribute.Attribute;
+import com.projectkorra.items.attribute.AttributeEvent;
 import com.projectkorra.items.event.PKItemDamageEvent;
 
 import com.projectkorra.projectkorra.event.AbilityDamageEntityEvent;
@@ -40,19 +40,17 @@ public class PKIListener implements Listener {
 	public void onAbilityStart(AbilityStartEvent event) {
 		if (event.isCancelled()) return;
 		//event.getAbility().getPlayer().sendMessage("Debug100");
-		Map<AttributeModification, Triple<PKItem, Position, ItemStack>> attributes = ItemUtils.getActive(event.getAbility().getPlayer());
+		Map<AttributeModification, Triple<PKItem, Position, ItemStack>> attributes = ItemUtils.getActive(event.getAbility().getPlayer(), AttributeEvent.ABILITY_START);
 		List<ItemStack> itemsToDamage = new ArrayList<ItemStack>();
 
 		for (AttributeModification attrdata : attributes.keySet()) { //Sorted from high to low priority
-			if (attrdata.getAttribute().getEvent() == Attribute.AttributeEvent.ABILITY_START) {
-				//event.getAbility().getPlayer().sendMessage("Debug101");
-				//event.getAbility().getPlayer().sendMessage(event.getAbility().getName());
-				if (attrdata.performModification((CoreAbility) event.getAbility())) { //Modify the ability from the attribute
-					//event.getAbility().getPlayer().sendMessage("Debug102");
-					if (!itemsToDamage.contains(attributes.get(attrdata).getRight())) {
-						itemsToDamage.add(attributes.get(attrdata).getRight());
-						//event.getAbility().getPlayer().sendMessage("Debug103");
-					}
+			//event.getAbility().getPlayer().sendMessage("Debug101");
+			//event.getAbility().getPlayer().sendMessage(event.getAbility().getName());
+			if (attrdata.performModification((CoreAbility) event.getAbility())) { //Modify the ability from the attribute
+				//event.getAbility().getPlayer().sendMessage("Debug102");
+				if (!itemsToDamage.contains(attributes.get(attrdata).getRight())) {
+					itemsToDamage.add(attributes.get(attrdata).getRight());
+					//event.getAbility().getPlayer().sendMessage("Debug103");
 				}
 			}
 		}
@@ -72,26 +70,24 @@ public class PKIListener implements Listener {
 	public void onAbilityDamage(AbilityDamageEntityEvent event) {
 		if (event.isCancelled()) return;
 		//event.getAbility().getPlayer().sendMessage("Debug100");
-		Map<AttributeModification, Triple<PKItem, Position, ItemStack>> attributes = ItemUtils.getActive(event.getAbility().getPlayer());
+		Map<AttributeModification, Triple<PKItem, Position, ItemStack>> attributes = ItemUtils.getActive(event.getAbility().getPlayer(), AttributeEvent.DAMAGE_RECEIVED);
 		Map<ItemStack, Integer> itemsToDamage = new HashMap<>();
 
 		double oldDamage = event.getDamage();
 
 		for (AttributeModification attrdata : attributes.keySet()) { //Sorted from high to low priority
-			if (attrdata.getAttribute().getEvent() == Attribute.AttributeEvent.DAMAGE_RECEIVED) {
-				//event.getAbility().getPlayer().sendMessage("Debug101");
-				//event.getAbility().getPlayer().sendMessage(event.getAbility().getName());
-				if (attrdata.performDamageModification((CoreAbility) event.getAbility(), event)) { //Modify the ability from the attribute
-					ItemStack stack = attributes.get(attrdata).getRight();
-					if (!itemsToDamage.containsKey(stack)) {
-						itemsToDamage.put(stack, 0);
-						//event.getAbility().getPlayer().sendMessage("Debug103");
-					}
-					int diff = (int) Math.round(oldDamage - event.getDamage());
-					int old = itemsToDamage.get(stack);
-					itemsToDamage.put(stack, old + (diff == 0 ? 1 : diff));
-					oldDamage = event.getDamage();
+			//event.getAbility().getPlayer().sendMessage("Debug101");
+			//event.getAbility().getPlayer().sendMessage(event.getAbility().getName());
+			if (attrdata.performDamageModification((CoreAbility) event.getAbility(), event)) { //Modify the ability from the attribute
+				ItemStack stack = attributes.get(attrdata).getRight();
+				if (!itemsToDamage.containsKey(stack)) {
+					itemsToDamage.put(stack, 0);
+					//event.getAbility().getPlayer().sendMessage("Debug103");
 				}
+				int diff = (int) Math.round(oldDamage - event.getDamage());
+				int old = itemsToDamage.get(stack);
+				itemsToDamage.put(stack, old + (diff == 0 ? 1 : diff));
+				oldDamage = event.getDamage();
 			}
 		}
 

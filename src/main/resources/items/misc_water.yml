@@ -13,8 +13,10 @@ SnowFallBoots:
   Usage: WEAR
   Armor: 2
   Attributes:
-    WaterSpoutDuration: +1500
-    IceBreathDuration: +1500
+    WaterSpout:
+      Duration: +1500
+    IceBreath:
+      Duration: +1500
   Lore:
     - "&7Makes you take less fall damage"
     - "&7as a waterbender"

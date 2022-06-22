@@ -13,13 +13,15 @@ public class AttributeModification {
 	
 	private Object value;
 	private AttributeModifier modifier;
-	private Attribute attribute;
+	private AttributeTarget target;
+	private AttributeType trait;
 	private PKItem source;
 	
 	//private static Method modifyAttributesMethod;
 	
-	public AttributeModification(Attribute attribute, String modification, PKItem source) {
-		this.attribute = attribute;
+	public AttributeModification(AttributeTarget target, AttributeType trait, String modification, PKItem source) {
+		this.target = target;
+		this.trait = trait;
 		this.source = source;
 		
 		modification = modification.replaceAll("[ A-Za-z]", "");
@@ -29,7 +31,7 @@ public class AttributeModification {
 			String parsingValue = modification;
 			
 			if (parsingValue.equalsIgnoreCase("false") || parsingValue.equalsIgnoreCase("true")) {
-				this.value = parsingValue.equalsIgnoreCase("false") ? false : true;
+				this.value = !parsingValue.equalsIgnoreCase("false");
 				return; //The value is a boolean - no need to continue parsing
 			}
 			
@@ -69,8 +71,7 @@ public class AttributeModification {
 				this.modifier = modifier;
 				
 			} catch (NumberFormatException e) {
-				ProjectKorraItems.createError("Cannot parse modification \"" + modification + "\" for Attribute \"" + attribute.getAttributeName());
-				this.attribute = null; 
+				ProjectKorraItems.createError("Cannot parse modification \"" + modification + "\" for Attribute \"" + target.getPrefix() + ":" + trait.getActualAttributeName());
 			}
 		}
 	}
@@ -91,21 +92,21 @@ public class AttributeModification {
 			}
 		}*/
 		
-		if (attribute == null || !attribute.affects(ability)) return false; //if the attribute doesn't affect the ability, it didn't work
+		if (target == null || !target.affects(ability)) return false; //if the attribute doesn't affect the ability, it didn't work
 		if (modifier == null) {
-			ability.setAttribute(attribute.getSuffix().getActualAttributeName(), value);
+			ability.setAttribute(trait.getActualAttributeName(), value);
 			//System.out.println("Set " + attribute.getSuffix().getActualAttributeName() + " to " + value);
 		} else {
-			ability.addAttributeModifier(attribute.getSuffix().getActualAttributeName(), (Number) value, modifier);
+			ability.addAttributeModifier(trait.getActualAttributeName(), (Number) value, modifier);
 		}
 
 		return true;
 	}
 
 	public boolean performDamageModification(CoreAbility ability, AbilityDamageEntityEvent event) {
-		if (attribute == null || !attribute.affects(ability)) return false; //if the attribute doesn't affect the ability, it didn't work
+		if (target == null || !target.affects(ability)) return false; //if the attribute doesn't affect the ability, it didn't work
 
-		if (attribute.getSuffix().getName().equalsIgnoreCase("resistance")) {
+		if (trait.getName().equalsIgnoreCase("resistance")) {
 			double percentage = 100;
 
 			if (modifier == null) percentage = getValue() * 100;
@@ -146,8 +147,12 @@ public class AttributeModification {
 		}
 	}
 	
-	public Attribute getAttribute() {
-		return attribute;
+	public AttributeType getAttributeTrait() {
+		return trait;
+	}
+
+	public AttributeTarget getAttributeTarget() {
+		return target;
 	}
 	
 	public PKItem getItemSource() {
