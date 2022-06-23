@@ -18,9 +18,9 @@ WaterInfinityStone:
     WaterAbilityCooldown: 120%
   ShapedRecipe:
     Recipe:
-      - '@WaterInfinityShard, @WaterInfinityShard, @WaterInfinityShard'
-      - '@WaterInfinityShard, @WaterInfinityShard, @WaterInfinityShard'
-      - '@WaterInfinityShard, @WaterInfinityShard, @WaterInfinityShard'
+      - 'PKI:WaterInfinityShard, PKI:WaterInfinityShard, PKI:WaterInfinityShard'
+      - 'PKI:WaterInfinityShard, PKI:WaterInfinityShard, PKI:WaterInfinityShard'
+      - 'PKI:WaterInfinityShard, PKI:WaterInfinityShard, PKI:WaterInfinityShard'
 WaterInfinityShard:
   Name: "&dINFINITY SHARD &9(WATER)"
   Material: PLAYER_HEAD
@@ -40,6 +40,6 @@ WaterInfinityShard:
     WaterAbilityCooldown: 102%
   ShapelessRecipe:
     Ingredients:
-      - '@WaterSigil'
+      - 'PKI:WaterSigil'
       - 'DIAMOND'
     Amount: 1

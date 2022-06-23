@@ -21,7 +21,7 @@ FireHelmet:
   ShapelessRecipe:
     Ingredients:
       - IRON_HELMET
-      - '@FireSigil'
+      - 'PKI:FireSigil'
     Amount: 1
 FireChestplate:
   Name: "&cFire Nation Chestplate"
@@ -46,7 +46,7 @@ FireChestplate:
   ShapelessRecipe:
     Ingredients:
       - IRON_CHESTPLATE
-      - '@FireSigil'
+      - 'PKI:FireSigil'
     Amount: 1
 FireLeggings:
   Name: "&cFire Nation Leggings"
@@ -71,7 +71,7 @@ FireLeggings:
   ShapelessRecipe:
     Ingredients:
       - IRON_LEGGINGS
-      - '@FireSigil'
+      - 'PKI:FireSigil'
     Amount: 1
 FireBoots:
   Name: "&cFire Nation Boots"
@@ -96,5 +96,5 @@ FireBoots:
   ShapelessRecipe:
     Ingredients:
       - IRON_BOOTS
-      - '@FireSigil'
+      - 'PKI:FireSigil'
     Amount: 1

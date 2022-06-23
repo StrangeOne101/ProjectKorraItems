@@ -1,5 +1,5 @@
 CompressedSnow:
-  Name: "Compressed Snow"
+  Name: "&fCompressed Snow"
   Material: SNOW_BLOCK
   ShapedRecipe:
     Recipe:
@@ -22,8 +22,8 @@ SnowFallBoots:
     - "&7as a waterbender"
   ShapedRecipe:
     Recipe:
-      - '@CompressedSnow, AIR, @CompressedSnow'
-      - '@CompressedSnow, AIR, @CompressedSnow'
+      - 'PKI:CompressedSnow, AIR, PKI:CompressedSnow'
+      - 'PKI:CompressedSnow, AIR, PKI:CompressedSnow'
     Amount: 1
   Requirements:
     Elements:

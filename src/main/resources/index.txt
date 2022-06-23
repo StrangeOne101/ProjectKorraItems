@@ -13,3 +13,4 @@ items/fire_infinity_stones.yml
 items/fire_armor.yml
 items/misc_water.yml
 items/meteorite.yml
+items/heads.yml

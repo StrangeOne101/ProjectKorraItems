@@ -1,4 +1,5 @@
 
 
-Loot:
+ChestLoot:
   "minecraft:chests/": loot
+  "terralith:chests/": terralith_loot

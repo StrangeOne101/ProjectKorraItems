@@ -18,14 +18,14 @@ EarthInfinityStone:
     EarthCooldown: 120%
   ShapedRecipe:
     Recipe:
-      - '@EarthInfinityShard, @EarthInfinityShard, @EarthInfinityShard'
-      - '@EarthInfinityShard, @EarthInfinityShard, @EarthInfinityShard'
-      - '@EarthInfinityShard, @EarthInfinityShard, @EarthInfinityShard'
+      - 'PKI:EarthInfinityShard, PKI:EarthInfinityShard, PKI:EarthInfinityShard'
+      - 'PKI:EarthInfinityShard, PKI:EarthInfinityShard, PKI:EarthInfinityShard'
+      - 'PKI:EarthInfinityShard, PKI:EarthInfinityShard, PKI:EarthInfinityShard'
     Amount: 1
 EarthInfinityShard:
   Name: "&dINFINITY SHARD &b(EARTH)"
   Material: PLAYER_HEAD
-  Texture: "cfcebe54dbc345ea7e22206f703e6b33befbe95b6a918bd1754b76188bc65bb5"
+  Texture: "3b4c2afd544d0a6139e6ae8ef8f0bfc09a9fd837d0cad4f5cd0fe7f607b7d1a0"
   Lore:
     - ""
     - "&7Makes you resistant to &bearthbending &7by"
@@ -41,6 +41,6 @@ EarthInfinityShard:
     EarthAbilityCooldown: 102%
   ShapelessRecipe:
     Ingredients:
-      - '@EarthSigil'
+      - 'PKI:EarthSigil'
       - 'DIAMOND'
     Amount: 1

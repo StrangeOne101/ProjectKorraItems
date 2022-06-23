@@ -30,9 +30,7 @@ import java.util.stream.Collectors;
 import com.strangeone101.holoitemsapi.CustomItem;
 import com.strangeone101.holoitemsapi.CustomItemRegistry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -49,20 +47,35 @@ import org.bukkit.inventory.Recipe;
 public class ConfigManager {
 
 	public static Config languageConfig;
+	public static Config genericConfig;
 
 	private static Map<Recipe, RecipeParser> registered = new HashMap<>();
 	
 	public ConfigManager() {
 
 		File languageFile = new File(ProjectKorraItems.plugin.getDataFolder(), "language.yml");
+		File genericFile = new File(ProjectKorraItems.plugin.getDataFolder(), "config.yml");
 		
 		//We aren't copying the language file. That can be generated.
 		languageConfig = new Config(languageFile);
+		genericConfig = new Config(genericFile);
 		registered.clear();
 		
 		checkLanguageFile();
 		loadItems();
 
+	}
+
+	public void checkGenericFile() {
+		//Get the FileConfiguration from genericConfig
+		//Add default values
+		//Save the FileConfiguration
+
+		FileConfiguration config = genericConfig.get();
+
+		config.addDefault("Loot.Enabled", true);
+
+		genericConfig.save();
 	}
 
 	public void checkLanguageFile() {
@@ -120,6 +133,8 @@ public class ConfigManager {
 		config.addDefault("Lore.SelfOwned", "&eYou own this item!");
 		config.addDefault("Lore.PlayerOwned", "&7Can only be used by &c{owner}&7!");
 
+		config.addDefault("Command.NoPermission", "&cYou don't have permission for this command!");
+
 		languageConfig.save();
 	}
 
@@ -142,6 +157,7 @@ public class ConfigManager {
 					.filter(p -> p.getFileName().toString().toLowerCase().endsWith(".yml"))
 					.collect(Collectors.toList())) {
 				File file = path.toFile();
+
 				YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
 				String pathName = file.getAbsolutePath().substring(itemFolder.getAbsolutePath().length() + 1);
@@ -368,7 +384,7 @@ public class ConfigManager {
 					tempFileLocations.put(item, file);
 					registered++;
 
-					ProjectKorraItems.log.info(item.getInternalName() + " registered");
+					//ProjectKorraItems.log.info(item.getInternalName() + " registered");
 
 					if (RecipeParser.hasRecipe(configitem)) {
 						recipesToDoLater.add(new ImmutablePair<>(item, configitem));
@@ -396,11 +412,11 @@ public class ConfigManager {
 
 			PKItem item = pair.getLeft();
 
-			for (RecipeParser parser : RecipeParser.getRegistry()) {
+			for (RecipeParser parser : RecipeParser.getParserRegistry()) {
 				if (section.get(parser.getConfigSectionName()) instanceof ConfigurationSection) {
 					ConfigurationSection currentSection = section.getConfigurationSection(parser.getConfigSectionName());
-					Recipe recipe = parser.parseRecipe(currentSection, item);
 
+					Recipe recipe = parser.parseRecipe(currentSection, item);
 					if (recipe != null) {
 						if (parser.registerRecipe(recipe)) {
 							ConfigManager.registered.put(recipe, parser);

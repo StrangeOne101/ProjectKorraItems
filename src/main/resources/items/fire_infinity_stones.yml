@@ -18,9 +18,9 @@ FireInfinityStone:
     FireAbilityCooldown: 120%
   ShapedRecipe:
     Recipe:
-      - '@FireInfinityShard, @FireInfinityShard, @FireInfinityShard'
-      - '@FireInfinityShard, @FireInfinityShard, @FireInfinityShard'
-      - '@FireInfinityShard, @FireInfinityShard, @FireInfinityShard'
+      - 'PKI:FireInfinityShard, PKI:FireInfinityShard, PKI:FireInfinityShard'
+      - 'PKI:FireInfinityShard, PKI:FireInfinityShard, PKI:FireInfinityShard'
+      - 'PKI:FireInfinityShard, PKI:FireInfinityShard, PKI:FireInfinityShard'
 FireInfinityShard:
   Name: "&dINFINITY SHARD &c(FIRE)"
   Material: PLAYER_HEAD
@@ -41,6 +41,6 @@ FireInfinityShard:
     FireAbilityCooldown: 102%
   ShapelessRecipe:
     Ingredients:
-      - '@FireSigil'
+      - 'PKI:FireSigil'
       - 'DIAMOND'
     Amount: 1

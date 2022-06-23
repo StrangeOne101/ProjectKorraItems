@@ -2,7 +2,7 @@ package com.projectkorra.items.loot;
 
 import com.projectkorra.items.ProjectKorraItems;
 import com.projectkorra.items.configuration.ConfigManager;
-import com.projectkorra.projectkorra.ProjectKorra;
+import com.projectkorra.items.utils.LootUtil;
 import com.strangeone101.holoitemsapi.loot.CustomLootRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -53,7 +52,7 @@ public class LootManager {
 
                 LootTable table = Bukkit.getLootTable(key);
 
-                if (table == null || table.getKey().getKey().equals("empty")) {
+                if (table == null || LootUtil.isBlank(table)) {
                     String s = ConfigManager.languageConfig.get().getString("Loot.InvalidTable").replace("{loottable}", tableName);
                     ProjectKorraItems.createError(s);
                     continue;
@@ -75,7 +74,7 @@ public class LootManager {
                 registered++;
             }
 
-            ProjectKorra.log.info("Registered " + registered + " custom loot injections!");
+            ProjectKorraItems.log.info("Registered " + registered + " custom loot injections!");
         } catch (IOException e) {
             e.printStackTrace();
         }

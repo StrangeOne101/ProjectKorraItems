@@ -13,7 +13,7 @@ MeteoriteIngot:
   Material: NETHERITE_INGOT
   Lore: '&7A shiny space rock!'
   FurnaceRecipe:
-    Item: '@Meteorite'
+    Item: 'PKI:Meteorite'
     Amount: 1
     Experience: 10
 MeteoriteSword:
@@ -34,8 +34,8 @@ MeteoriteSword:
   HideEnchants: true
   ShapedRecipe:
     Recipe:
-      - '@MeteoriteIngot'
-      - '@MeteoriteIngot'
+      - 'PKI:MeteoriteIngot'
+      - 'PKI:MeteoriteIngot'
       - BLAZE_ROD
     Amount: 1
 

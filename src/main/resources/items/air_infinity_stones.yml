@@ -18,9 +18,9 @@ AirInfinityStone:
     AirAbilityCooldown: 120%
   ShapedRecipe:
     Recipe:
-      - '@AirInfinityShard, @AirInfinityShard, @AirInfinityShard'
-      - '@AirInfinityShard, @AirInfinityShard, @AirInfinityShard'
-      - '@AirInfinityShard, @AirInfinityShard, @AirInfinityShard'
+      - 'PKI:AirInfinityShard, PKI:AirInfinityShard, PKI:AirInfinityShard'
+      - 'PKI:AirInfinityShard, PKI:AirInfinityShard, PKI:AirInfinityShard'
+      - 'PKI:AirInfinityShard, PKI:AirInfinityShard, PKI:AirInfinityShard'
 AirInfinityShard:
   Name: "&dINFINITY SHARD &f(AIR)"
   Material: PLAYER_HEAD
@@ -41,6 +41,6 @@ AirInfinityShard:
     AirAbilityCooldown: 102%
   ShapelessRecipe:
     Ingredients:
-      - '@AirSigil'
+      - 'PKI:AirSigil'
       - 'DIAMOND'
     Amount: 1
