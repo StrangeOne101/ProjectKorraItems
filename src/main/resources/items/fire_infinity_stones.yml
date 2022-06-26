@@ -32,13 +32,14 @@ FireInfinityShard:
     - "&7the inventory"
   Usage: INVENTORY
   Attributes:
-    FireAbilityResistance: 10%
-    FireAbilityDamage: 105%
-    FireAbilityRange: 105%
-    FireAbilityHeight: 105%
-    FireAbilityWidth: 105%
-    FireAbilitySpeed: 105%
-    FireAbilityCooldown: 102%
+    FireAbility:
+      Resistance: 10%
+      Damage: 105%
+      Range: 105%
+      Height: 105%
+      Width: 105%
+      Speed: 105%
+      Cooldown: 102%
   ShapelessRecipe:
     Ingredients:
       - 'PKI:FireSigil'

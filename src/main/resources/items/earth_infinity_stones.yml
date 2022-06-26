@@ -9,13 +9,14 @@ EarthInfinityStone:
   Usage: INVENTORY
   Durability: 200
   Attributes:
-    EarthResistance: 100%
-    EarthDamage: 150%
-    EarthRange: 150%
-    EarthHeight: 150%
-    EarthWidth: 150%
-    EarthSpeed: 150%
-    EarthCooldown: 120%
+    EarthAbility:
+      Resistance: 100%
+      Damage: 150%
+      Range: 150%
+      Height: 150%
+      Width: 150%
+      Speed: 150%
+      Cooldown: 120%
   ShapedRecipe:
     Recipe:
       - 'PKI:EarthInfinityShard, PKI:EarthInfinityShard, PKI:EarthInfinityShard'
@@ -32,13 +33,14 @@ EarthInfinityShard:
     - "&e10%&7 and buffs it by &e5% &7when held in the inventory"
   Usage: INVENTORY
   Attributes:
-    EarthResistance: 10%
-    EarthAbilityDamage: 105%
-    EarthAbilityRange: 105%
-    EarthAbilityHeight: 105%
-    EarthAbilityWidth: 105%
-    EarthAbilitySpeed: 105%
-    EarthAbilityCooldown: 102%
+    EarthAbility:
+      Resistance: 10%
+      Damage: 105%
+      Range: 105%
+      Height: 105%
+      Width: 105%
+      Speed: 105%
+      Cooldown: 102%
   ShapelessRecipe:
     Ingredients:
       - 'PKI:EarthSigil'

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.projectkorra.items.DefinedBoolean;
 import org.bukkit.entity.Player;
 
 import com.projectkorra.items.configuration.ConfigManager;
@@ -13,10 +14,16 @@ import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.Element.SubElement;
 
 public class Requirements {
-	
+
+	//Generic Requirements
 	private Set<String> permissions = new HashSet<String>();;
 	private Set<String> worlds = new HashSet<String>();
 	private Set<Element> elements = new HashSet<Element>();
+
+	//Entity Requirements
+	private Set<AttributeTarget> killedBy = new HashSet<>();
+	private Set<String> customNames = new HashSet<>();
+	private DefinedBoolean isBaby = DefinedBoolean.UNDEFINED;
 	
 	/**
 	 * Whether a player meets the requirements or not

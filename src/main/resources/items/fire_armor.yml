@@ -17,7 +17,7 @@ FireHelmet:
   Lore:
     - ""
     - "&7Enhances your &cfirebending &7and raises your"
-    - "&7fire resistance"
+    - "&7resistance against fire abilities"
   ShapelessRecipe:
     Ingredients:
       - IRON_HELMET
@@ -42,7 +42,7 @@ FireChestplate:
   Lore:
     - ""
     - "&7Enhances your &cfirebending &7and raises your"
-    - "&7fire resistance"
+    - "&7resistance against fire abilities"
   ShapelessRecipe:
     Ingredients:
       - IRON_CHESTPLATE
@@ -67,7 +67,7 @@ FireLeggings:
   Lore:
     - ""
     - "&7Enhances your &cfirebending &7and raises your"
-    - "&7fire resistance"
+    - "&7resistance against fire abilities"
   ShapelessRecipe:
     Ingredients:
       - IRON_LEGGINGS
@@ -92,7 +92,7 @@ FireBoots:
   Lore:
     - ""
     - "&7Enhances your &cfirebending &7and raises your"
-    - "&7fire resistance"
+    - "&7resistance against fire abilities"
   ShapelessRecipe:
     Ingredients:
       - IRON_BOOTS

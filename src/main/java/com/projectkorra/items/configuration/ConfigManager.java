@@ -9,6 +9,7 @@ import com.projectkorra.items.attribute.AttributeTarget;
 import com.projectkorra.items.attribute.AttributeType;
 import com.projectkorra.items.attribute.Requirements;
 
+import com.projectkorra.items.event.PKItemLoadEvent;
 import com.projectkorra.items.recipe.RecipeParser;
 import com.projectkorra.projectkorra.Element;
 
@@ -146,7 +147,6 @@ public class ConfigManager {
 			return;
 		}
 
-		Map<CustomItem, File> tempFileLocations = new HashMap<>();
 		Set<Pair<PKItem, ConfigurationSection>> recipesToDoLater = new HashSet<>();
 
 		int registered = 0;
@@ -169,7 +169,7 @@ public class ConfigManager {
 					if (CustomItemRegistry.getCustomItem(itemName) != null) {
 						String error = languageConfig.get().getString("Load.DuplicateID");
 						error = error.replace("{item}", itemName).replace("{file1}", pathName)
-								.replace("{file2}", tempFileLocations.get(CustomItemRegistry.getCustomItem(itemName)).getName());
+								.replace("{file2}", ((PKItem)CustomItemRegistry.getCustomItem(itemName)).getFileLocation());
 						ProjectKorraItems.createError(error);
 						continue itemloop;
 					}
@@ -380,14 +380,17 @@ public class ConfigManager {
 						}
 					}
 
-					item.register();
-					tempFileLocations.put(item, file);
-					registered++;
+					PKItemLoadEvent event = new PKItemLoadEvent(item, configitem, file);
+					if (!event.isCancelled()) {
+						item = event.getItem(); //In case they override the item to load
+						item.register(); //Register the item
+						registered++;
 
-					//ProjectKorraItems.log.info(item.getInternalName() + " registered");
+						//ProjectKorraItems.log.info(item.getInternalName() + " registered");
 
-					if (RecipeParser.hasRecipe(configitem)) {
-						recipesToDoLater.add(new ImmutablePair<>(item, configitem));
+						if (RecipeParser.hasRecipe(configitem)) {
+							recipesToDoLater.add(new ImmutablePair<>(item, configitem));
+						}
 					}
 				}
 

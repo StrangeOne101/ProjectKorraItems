@@ -1,15 +1,18 @@
 package com.projectkorra.items.event;
 
 import com.projectkorra.items.PKItem;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
-public class PKItemDamageEvent extends PKItemEvent implements Cancellable {
+import java.io.File;
 
-    private ItemStack stack;
-    private Player player;
+public class PKItemLoadEvent extends PKItemEvent implements Cancellable {
+
+    private ConfigurationSection section;
+    private File file;
     private boolean cancelled;
 
     private static final HandlerList handlers = new HandlerList();
@@ -19,10 +22,10 @@ public class PKItemDamageEvent extends PKItemEvent implements Cancellable {
         return handlers;
     }
 
-    public PKItemDamageEvent(PKItem item, ItemStack stack, Player player) {
+    public PKItemLoadEvent(PKItem item, ConfigurationSection section, File file) {
         super(item);
-        this.stack = stack;
-        this.player = player;
+        this.section = section;
+        this.file = file;
     }
 
 
@@ -36,13 +39,15 @@ public class PKItemDamageEvent extends PKItemEvent implements Cancellable {
         this.cancelled = b;
     }
 
-    public Player getPlayer() {
-        return player;
+    public ConfigurationSection getSection() {
+        return section;
     }
 
-    public ItemStack getStack() {
-        return stack;
+    public File getFile() {
+        return file;
     }
 
-
+    public void setFinalItem(PKItem item) {
+        this.setItem(item);
+    }
 }

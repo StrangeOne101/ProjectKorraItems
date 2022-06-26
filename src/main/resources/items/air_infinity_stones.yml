@@ -9,13 +9,14 @@ AirInfinityStone:
   Usage: INVENTORY
   Durability: 200
   Attributes:
-    AirAbilityResistance: 100%
-    AirAbilityDamage: 150%
-    AirAbilityRange: 150%
-    AirAbilityHeight: 150%
-    AirAbilityWidth: 150%
-    AirAbilitySpeed: 150%
-    AirAbilityCooldown: 120%
+    AirAbility:
+      Resistance: 100%
+      Damage: 150%
+      Range: 150%
+      Height: 150%
+      Width: 150%
+      Speed: 150%
+      Cooldown: 120%
   ShapedRecipe:
     Recipe:
       - 'PKI:AirInfinityShard, PKI:AirInfinityShard, PKI:AirInfinityShard'
@@ -32,13 +33,14 @@ AirInfinityShard:
     - "&7the inventory"
   Usage: INVENTORY
   Attributes:
-    AirAbilityResistance: 10%
-    AirAbilityDamage: 105%
-    AirAbilityRange: 105%
-    AirAbilityHeight: 105%
-    AirAbilityWidth: 105%
-    AirAbilitySpeed: 105%
-    AirAbilityCooldown: 102%
+    AirAbility:
+      Resistance: 10%
+      Damage: 105%
+      Range: 105%
+      Height: 105%
+      Width: 105%
+      Speed: 105%
+      Cooldown: 102%
   ShapelessRecipe:
     Ingredients:
       - 'PKI:AirSigil'

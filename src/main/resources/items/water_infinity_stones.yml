@@ -9,13 +9,14 @@ WaterInfinityStone:
   Usage: INVENTORY
   Durability: 200
   Attributes:
-    WaterAbilityResistance: 100%
-    WaterAbilityDamage: 150%
-    WaterAbilityRange: 150%
-    WaterAbilityHeight: 150%
-    WaterAbilityWidth: 150%
-    WaterAbilitySpeed: 150%
-    WaterAbilityCooldown: 120%
+    WaterAbility:
+      Resistance: 100%
+      Damage: 150%
+      Range: 150%
+      Height: 150%
+      Width: 150%
+      Speed: 150%
+      Cooldown: 120%
   ShapedRecipe:
     Recipe:
       - 'PKI:WaterInfinityShard, PKI:WaterInfinityShard, PKI:WaterInfinityShard'
@@ -31,13 +32,14 @@ WaterInfinityShard:
     - "&e10%&7 and buffs it by &e5% &7when held in the inventory"
   Usage: INVENTORY
   Attributes:
-    WaterResistance: 10%
-    WaterAbilityDamage: 105%
-    WaterAbilityRange: 105%
-    WaterAbilityHeight: 105%
-    WaterAbilityWidth: 105%
-    WaterAbilitySpeed: 105%
-    WaterAbilityCooldown: 102%
+    WaterAbility:
+      Resistance: 10%
+      Damage: 105%
+      Range: 105%
+      Height: 105%
+      Width: 105%
+      Speed: 105%
+      Cooldown: 102%
   ShapelessRecipe:
     Ingredients:
       - 'PKI:WaterSigil'
