@@ -1,6 +1,5 @@
 package com.projectkorra.items;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +39,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class PKItem extends CustomItem {
 
 	protected Usage usage;
-	protected Requirements req = new Requirements();
+	protected Requirements requirements;
 	protected Map<AttributeEvent, Set<AttributeModification>> attributes = new HashMap<>();
 	protected String file = "(Unknown)";
 
@@ -49,7 +48,7 @@ public class PKItem extends CustomItem {
 		super(name, material);
 
 		this.usage = Usage.NONE;
-		this.req = new Requirements(); //Blank requirements
+		this.requirements = new Requirements(); //Blank requirements
 
 		this.addVariable("owner", data -> {
 			if (!data.has(HoloItemsAPI.getKeys().CUSTOM_ITEM_OWNER, PersistentDataType.STRING)) return "(None)";
@@ -255,7 +254,7 @@ public class PKItem extends CustomItem {
 	 * @return If the player can use the item
 	 */
 	public boolean canUse(Player player, ItemStack stack) {
-		if (!req.meets(player)) {
+		if (!requirements.meets(player)) {
 			return false;
 		}
 		
@@ -278,7 +277,7 @@ public class PKItem extends CustomItem {
 	}
 	
 	public void setRequirements(Requirements req) {
-		this.req = req;
+		this.requirements = req;
 	}
 	
 	public PKItem setUsage(Usage usage) {
@@ -300,7 +299,7 @@ public class PKItem extends CustomItem {
 	}
 
 	public Requirements getRequirements() {
-		return req;
+		return requirements;
 	}
 	
 	public boolean isPlayedLocked() {
@@ -319,7 +318,7 @@ public class PKItem extends CustomItem {
 	public enum Usage {
 		CONSUMABLE, WEARABLE, HOLD, INVENTORY, NONE;
 
-		private static Usage[] REAL = {CONSUMABLE, WEARABLE, HOLD, INVENTORY};
+		private static Usage[] VALID = {CONSUMABLE, WEARABLE, HOLD, INVENTORY};
 		
 		
 		/***
@@ -333,7 +332,8 @@ public class PKItem extends CustomItem {
 			string = string.replaceAll(" ", "_"); 
 			if (string.equalsIgnoreCase("consumable") || string.equalsIgnoreCase("consume") || string.equalsIgnoreCase("potion")) {
 				return CONSUMABLE;
-			} else if (string.equalsIgnoreCase("wear") || string.equalsIgnoreCase("wearable")) {
+			} else if (string.equalsIgnoreCase("wear") || string.equalsIgnoreCase("wearable") || string.equalsIgnoreCase("equipable") ||
+					string.equalsIgnoreCase("equip")) {
 				return WEARABLE;
 			} else if (string.equalsIgnoreCase("hold") || string.equalsIgnoreCase("hand")) {
 				return HOLD;
@@ -356,7 +356,7 @@ public class PKItem extends CustomItem {
 		}
 
 		public static Usage[] getRealValues() {
-			return REAL;
+			return VALID;
 		}
 
 		public ActiveConditions toConditions() {

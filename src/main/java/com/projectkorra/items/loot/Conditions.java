@@ -1,2 +1,6 @@
-package com.projectkorra.items.loot;public class Conditions {
+package com.projectkorra.items.loot;
+
+public class Conditions {
+
+
 }
