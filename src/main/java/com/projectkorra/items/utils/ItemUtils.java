@@ -12,10 +12,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.projectkorra.items.attribute.AttributeEvent;
-import com.strangeone101.holoitemsapi.CustomItem;
-import com.strangeone101.holoitemsapi.itemevent.EventCache;
-import com.strangeone101.holoitemsapi.itemevent.EventContext;
-import com.strangeone101.holoitemsapi.itemevent.Position;
+import com.projectkorra.items.api.CustomItem;
+import com.projectkorra.items.api.itemevent.EventCache;
+import com.projectkorra.items.api.itemevent.EventContext;
+import com.projectkorra.items.api.itemevent.Position;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;

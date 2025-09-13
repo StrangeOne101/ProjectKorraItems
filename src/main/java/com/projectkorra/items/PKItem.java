@@ -1,42 +1,34 @@
 package com.projectkorra.items;
 
+import com.projectkorra.items.api.CustomItem;
+import com.projectkorra.items.api.CustomItemRegistry;
+import com.projectkorra.items.api.HoloItemsAPI;
+import com.projectkorra.items.api.Properties;
+import com.projectkorra.items.api.itemevent.ActiveConditions;
+import com.projectkorra.items.api.util.UUIDTagType;
+import com.projectkorra.items.attribute.AttributeEvent;
+import com.projectkorra.items.attribute.AttributeModification;
+import com.projectkorra.items.attribute.Requirements;
+import com.projectkorra.items.configuration.ConfigManager;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.projectkorra.items.attribute.AttributeEvent;
-import com.strangeone101.holoitemsapi.CustomItem;
-import com.strangeone101.holoitemsapi.CustomItemRegistry;
-import com.strangeone101.holoitemsapi.HoloItemsAPI;
-
-import com.strangeone101.holoitemsapi.Properties;
-import com.strangeone101.holoitemsapi.itemevent.ActiveConditions;
-
-import com.strangeone101.holoitemsapi.util.UUIDTagType;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-
-import org.bukkit.entity.Player;
-
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import com.projectkorra.items.attribute.AttributeModification;
-import com.projectkorra.items.attribute.Requirements;
-import com.projectkorra.items.configuration.ConfigManager;
-
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-
-public class PKItem extends CustomItem {
+public class PKItem extends CustomItem implements ItemProperties {
 
 	protected Usage usage;
 	protected Requirements requirements;

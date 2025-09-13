@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.strangeone101.holoitemsapi.CustomItem;
-import com.strangeone101.holoitemsapi.CustomItemRegistry;
+import com.projectkorra.items.api.CustomItem;
+import com.projectkorra.items.api.CustomItemRegistry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 

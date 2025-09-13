@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.projectkorra.items.menu.GiveMenu;
-import com.strangeone101.holoitemsapi.CustomItemRegistry;
+import com.projectkorra.items.api.CustomItemRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

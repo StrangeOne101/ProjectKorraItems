@@ -1,8 +1,8 @@
 package com.projectkorra.items.menu;
 
 import com.projectkorra.items.PKItem;
-import com.strangeone101.holoitemsapi.CustomItem;
-import com.strangeone101.holoitemsapi.CustomItemRegistry;
+import com.projectkorra.items.api.CustomItem;
+import com.projectkorra.items.api.CustomItemRegistry;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

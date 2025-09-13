@@ -3,7 +3,7 @@ package com.projectkorra.items.loot;
 import com.projectkorra.items.ProjectKorraItems;
 import com.projectkorra.items.configuration.ConfigManager;
 import com.projectkorra.items.utils.LootUtil;
-import com.strangeone101.holoitemsapi.loot.CustomLootRegistry;
+import com.projectkorra.items.api.loot.CustomLootRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;

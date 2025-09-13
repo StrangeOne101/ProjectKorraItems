@@ -1,0 +1,16 @@
+[12:27:15 ERROR]: Could not pass event ItemSpawnEvent to ProjectKorraItems v2.0
+java.lang.NullPointerException: Cannot invoke "org.bukkit.entity.Player.getUniqueId()" because "player" is null
+        at com.projectkorra.items.PKItem.updateStack(PKItem.java:172) ~[ProjectKorraItems-2.0-PK1.9.3.jar:?]
+        at com.strangeone101.listener.com.projectkorra.items.api.ItemListener.onItemSpawn(ItemListener.java:326) ~[ProjectKorraItems-2.0-PK1.9.3.jar:?]
+
+Low Priority:
+- Make picking up custom items not grant vanilla recipes
+- Implement giving players permissions for when an item is active
+- Implement /pk items dropitem <item> <xyz> [world]
+
+Medium Priority:
+- Implement mob drops
+
+High Priority:
+- Fix attributes not applying
+- Implement "sets" for items and set bonuses

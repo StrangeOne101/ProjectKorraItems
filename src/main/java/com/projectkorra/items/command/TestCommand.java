@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 import com.projectkorra.items.ProjectKorraItems;
 import com.projectkorra.items.attribute.AttributeEvent;
-import com.strangeone101.holoitemsapi.CustomItem;
-import com.strangeone101.holoitemsapi.CustomItemRegistry;
-import com.strangeone101.holoitemsapi.itemevent.Position;
+import com.projectkorra.items.api.CustomItem;
+import com.projectkorra.items.api.CustomItemRegistry;
+import com.projectkorra.items.api.itemevent.Position;
 import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

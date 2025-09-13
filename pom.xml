@@ -10,7 +10,7 @@
     <name>ProjectKorraItems</name>
 
     <properties>
-        <projectkorra.version>1.9.3</projectkorra.version>
+        <projectkorra.version>1.12.0</projectkorra.version>
     </properties>
 
     <build>
@@ -20,8 +20,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -53,7 +53,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <version>1.18-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -63,9 +63,14 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.strangeone101</groupId>
-            <artifactId>HoloItemsAPI</artifactId>
-            <version>0.7.12</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.17.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>26.0.2</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

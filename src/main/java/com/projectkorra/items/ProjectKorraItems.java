@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 
 import com.projectkorra.items.loot.LootManager;
 import com.projectkorra.items.menu.MenuListener;
-import com.strangeone101.holoitemsapi.HoloItemsAPI;
-import com.strangeone101.holoitemsapi.itemevent.EventCache;
-import com.strangeone101.holoitemsapi.recipe.RecipeManager;
+import com.projectkorra.items.api.HoloItemsAPI;
+import com.projectkorra.items.api.itemevent.EventCache;
+import com.projectkorra.items.api.recipe.RecipeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;

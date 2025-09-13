@@ -3,7 +3,7 @@ package com.projectkorra.items.recipe;
 import com.projectkorra.items.PKItem;
 import com.projectkorra.items.ProjectKorraItems;
 import com.projectkorra.items.configuration.ConfigManager;
-import com.strangeone101.holoitemsapi.recipe.RecipeManager;
+import com.projectkorra.items.api.recipe.RecipeManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.BlastingRecipe;

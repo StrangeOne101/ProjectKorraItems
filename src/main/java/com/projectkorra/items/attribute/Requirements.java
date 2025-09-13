@@ -2,10 +2,10 @@ package com.projectkorra.items.attribute;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.projectkorra.items.DefinedBoolean;
 import org.bukkit.entity.Player;
 
 import com.projectkorra.items.configuration.ConfigManager;
@@ -23,7 +23,7 @@ public class Requirements {
 	//Entity Requirements
 	private Set<AttributeTarget> killedBy = new HashSet<>();
 	private Set<String> customNames = new HashSet<>();
-	private DefinedBoolean isBaby = DefinedBoolean.UNDEFINED;
+	private Optional<Boolean> isBaby = Optional.empty();
 	
 	/**
 	 * Whether a player meets the requirements or not

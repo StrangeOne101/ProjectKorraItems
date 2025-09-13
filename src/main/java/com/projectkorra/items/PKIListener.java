@@ -9,7 +9,7 @@ import com.projectkorra.items.attribute.AttributeEvent;
 import com.projectkorra.items.event.PKItemDamageEvent;
 
 import com.projectkorra.projectkorra.event.AbilityDamageEntityEvent;
-import com.strangeone101.holoitemsapi.itemevent.Position;
+import com.projectkorra.items.api.itemevent.Position;
 import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.Bukkit;
 

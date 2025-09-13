@@ -2,7 +2,7 @@ package com.projectkorra.items.command;
 
 import java.util.List;
 
-import com.strangeone101.holoitemsapi.CustomItemRegistry;
+import com.projectkorra.items.api.CustomItemRegistry;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

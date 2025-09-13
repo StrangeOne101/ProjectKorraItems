@@ -2,7 +2,7 @@ package com.projectkorra.items.utils;
 
 import com.projectkorra.items.ProjectKorraItems;
 import com.projectkorra.projectkorra.util.ReflectionHandler;
-import com.strangeone101.holoitemsapi.util.ReflectionUtils;
+import com.projectkorra.items.api.util.ReflectionUtils;
 import org.bukkit.loot.LootTable;
 
 import java.lang.reflect.Field;
